@@ -2,7 +2,7 @@
 
  Maxima language code for expressing eigenvectors in terms of eigenvalues.
 
-To use this package, you will first need to manually load it:
+To use this package, you will need to load it manually:
  ~~~
 (%i1)	load("alt_eigen.mac")$
 ~~~
