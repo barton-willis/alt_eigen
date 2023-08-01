@@ -32,7 +32,8 @@ A 3 by 3 case:
 	)],z=-(3*sqrt(33)-15)/2,[matrix([3*sqrt(33)+11],[(3*sqrt(33)-15)/2+2],[-22]
 	)],z=0,[matrix([-1],[2],[-1])]]
  ~~~
-An example with a symbolic matrix entry
+
+ The matrix entries can be symbolic; here is an example
  ~~~
 (%i49)	M : matrix([1,2],[-1/8,q]);
 (%o49)	matrix([1,2],[-1/8,q])
@@ -41,7 +42,7 @@ An example with a symbolic matrix entry
 (%o50)	assuming(notequal(-64*(q-2)*q,0),[z^2=-(-4*q*z-4*z+4*q+1)/4,
           [matrix([2],[z-1])]])
 ~~~
-Pasting in `q=5,` we get the eigenvectors of `matrix([1,2],[-1/8,5])`
+The method recognizes that `64*(q-2)q = 0` is q special case. Pasting in `q=5,` we get the eigenvectors of `matrix([1,2],[-1/8,5])`
 ~~~
 (%i51)	subst(q=5,%);
 (%o51)	[z^2=-(21-24*z)/4,[matrix([2],[z-1])]]
