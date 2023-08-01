@@ -14,3 +14,19 @@ Example of simple usage
 (%o20)	[z=-5,[matrix([-1],[3])],z=2,[matrix([-2],[-1])]]
  ~~~
  The optional argument `'maxdegree = 1` only solves degree one factors of the characteristic polynomial. For this example, both factors are degree one, so `alt_eigen` explicitly finds both eigenvectors.
+
+A 3 by 3 case:
+ ~~~
+ (%i21)	M : matrix([1,2,3],[4,5,6],[7,8,9]);
+ (%i21)	matrix([1,2,3],	[4,5,6],[7,8,9])
+
+(%i22)	alt_eigen(M, 'var = z, 'maxdegree = 1);
+(%o22)	[z^2=15*z+18,[matrix([26-2*z],[2-z],[-22])],z=0,
+        [matrix([-1],[2],[-1])]]
+
+(%i23)	alt_eigen(M, 'var = z, 'maxdegree = 2);
+(%o23)	[z=(3*sqrt(33)+15)/2,[matrix([11-3*sqrt(33)],[2-(3*sqrt(33)+15)/2],
+		[-22]
+	)],z=-(3*sqrt(33)-15)/2,[matrix([3*sqrt(33)+11],[(3*sqrt(33)-15)/2+2],[-22]
+	)],z=0,[matrix([-1],[2],[-1])]]
+ ~~~
