@@ -38,7 +38,9 @@ An example with a symbolic matrix entry
 (%i50)	alt_eigen(M, 'var = z, 'maxdegree = 1);
 (%o50)	assuming(notequal(-64*(q-2)*q,0),[z^2=-(-4*q*z-4*z+4*q+1)/4,
           [matrix([2],[z-1])]])
-
+~~~
+Pasting in `q=5,` we get the eigenvectors of `matrix([1,2],[-1/8,5]).`
+~~~
 (%i51)	subst(q=5,%);
 (%o51)	[z^2=-(21-24*z)/4,[matrix([2],[z-1])]]
  ~~~
