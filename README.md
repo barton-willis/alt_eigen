@@ -30,3 +30,15 @@ A 3 by 3 case:
 	)],z=-(3*sqrt(33)-15)/2,[matrix([3*sqrt(33)+11],[(3*sqrt(33)-15)/2+2],[-22]
 	)],z=0,[matrix([-1],[2],[-1])]]
  ~~~
+An example with a symbolic matrix entry
+ ~~~
+(%i49)	M : matrix([1,2],[-1/8,q]);
+(%o49)	matrix([1,2],[-1/8,q])
+
+(%i50)	alt_eigen(M, 'var = z, 'maxdegree = 1);
+(%o50)	assuming(notequal(-64*(q-2)*q,0),[z^2=-(-4*q*z-4*z+4*q+1)/4,
+          [matrix([2],[z-1])]])
+
+(%i51)	subst(q=5,%);
+(%o51)	[z^2=-(21-24*z)/4,[matrix([2],[z-1])]]
+ ~~~
