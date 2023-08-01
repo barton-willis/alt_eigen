@@ -2,11 +2,12 @@
 
  Maxima language code for expressing eigenvectors in terms of eigenvalues.
 
-To use this package, you will need to load it manually:
+To use this package, you will need to load it manually. Assuming the file 
+`alt_eigen.mac` is in a path that Maxima can find, load it using the command
  ~~~
 (%i1)	load("alt_eigen.mac")$
 ~~~
-Example of simple usage
+Examples
 ~~~
 (%i19)	M : matrix([1,2],[3,-4]);
 (%o17)	matrix([1,2],[3,-4])
