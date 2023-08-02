@@ -103,7 +103,7 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
  doallmxops : true],  
   if not matrixp(m) then error("The first argument must be a matrix"),  
   if blockmatrixp(m) then error("The first argument must be an unblocked matrix"),
-  if not float_free_p(m) then error("The function alt_eigen does not work for  matrices with floating point entries"),
+  if not float_free_p(m) then error("The function alt_eigen does not work for matrices with floating point entries"),
 
   [r,c] : matrix_size(m),
   if r # c or r = 0 then error("The first argument must be a nonempty square matrix"),
