@@ -41,7 +41,7 @@ alt_eigen(matrix([2,0],[0,2]), 'var=z);
 alt_eigen(matrix([2,0],[0,8]), 'var=z);
 [z=2,[matrix([1],[0])],z=8,[matrix([0],[-1])]]$
 
-/* Other */
+/* Does the assuming function work OK? */
 block([xxx : alt_eigen(matrix([1,0,2],[0,1,8],[0,0,q]), 'var=z)],[xxx, subst(q=28,xxx)]);
 [assuming(notequal((q-1)^2,0),[z=q,[matrix([-2],[-8],[1-q])],
     z=1,[matrix([0],[1],[0]),matrix([1],[0],[0])]]),
@@ -57,3 +57,23 @@ block([gcd : subres], alt_eigen(M,'var=z));
 
 block([gcd : spmod], alt_eigen(M,'var=z));
 [z=(%i+2)/2,[matrix([-1],[%i],[-1])],z=1,[matrix([1],[0],[0])]]$
+
+(M : matrix([15714,	24872,	12436],	[-1450,	-2151,	-1160],[-7025,	-11240,	-5451]),0);
+0$
+
+alt_eigen(M, var='z,maxdegree=1,'orthogonal=false);
+[z=169,[matrix([-8],[5],[0]),matrix([0],[1],[-2])],
+z=7774,[matrix([3109],[-290],[-1405])]]$
+
+alt_eigen(M, var='z,maxdegree=1,'orthogonal=false);
+    [z=169,[matrix([40/89],[64/89],[-2]),matrix([-8],[5],[0])],
+    z=7774,[matrix([3109],[-290],[-1405])]]$
+
+(remvalue(M),0);
+0$
+
+values;
+[]$
+
+contexts;
+[initial,global]$
