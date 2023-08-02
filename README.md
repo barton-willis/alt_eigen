@@ -15,7 +15,9 @@ Examples
 (%i20)	alt_eigen(M, 'var = z, 'maxdegree = 1);
 (%o20)	[z=-5,[matrix([-1],[3])],z=2,[matrix([-2],[-1])]]
  ~~~
- The optional argument `'maxdegree = 1` only solves degree one factors of the characteristic polynomial. For this example, both factors are degree one, so `alt_eigen` explicitly finds both eigenvectors.
+ This says that `-5` is an eigenvalue with an associated eigenvector of 
+ `matrix([-1],[3])`; and that `2` is an eigenvalue with an associated eigenvector of
+ `[matrix([-2],[-1]).`  The optional argument `'maxdegree = 1` only solves degree one factors of the characteristic polynomial. For this example, both factors are degree one, so `alt_eigen` explicitly finds _both_ eigenvectors.
 
 A 3 by 3 case:
  ~~~
