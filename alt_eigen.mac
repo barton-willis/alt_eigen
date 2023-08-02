@@ -23,13 +23,11 @@ simplifying('assuming,'simp_assuming)$
 float_free_p(e) := if mapatom(e) then not (floatnump(e) or bfloatp(e)) else every(lambda([s], float_free_p(s)), args(e));
 
 /* Gram-Schmidt assuming that p vanishes. 
-
-(1) Due to the conjugate([rat(0)]) --> error, the dot function maps conjugate.
-(2) Last I tried, doing the fullratsubst inside proj speeds some calculations. */
+Last I tried, doing the fullratsubst inside proj speeds some calculations. */
 
 mygramschmidt(v,p) := block([u : [], proj, dot, uk, doallmxops : true, scalarmatrixp : true],   
-   dot : lambda([a,b], map('conjugate, transpose(a)) . b),
-   proj : lambda([a,b], fullratsubst(p, apply('dot,[a,b]) * a / apply('dot, [a,a]))),    
+   dot : lambda([a,b], conjugate(a).b),
+   proj : lambda([a,b], fullratsubst(p, dot(a,b)*a/dot(a,a))),    
    for vk in v do (         
       uk : vk - lsum(proj(s,vk), s, u),
       uk : fullratsubst(p, ratexpand(uk)),        

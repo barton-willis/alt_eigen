@@ -65,15 +65,12 @@ alt_eigen(M, var='z,maxdegree=1,'orthogonal=false);
 [z=169,[matrix([-8],[5],[0]),matrix([0],[1],[-2])],
 z=7774,[matrix([3109],[-290],[-1405])]]$
 
-alt_eigen(M, var='z,maxdegree=1,'orthogonal=false);
+alt_eigen(M, var='z,maxdegree=1,'orthogonal=true);
     [z=169,[matrix([40/89],[64/89],[-2]),matrix([-8],[5],[0])],
     z=7774,[matrix([3109],[-290],[-1405])]]$
 
 (remvalue(M),0);
 0$
-
-values;
-[]$
 
 contexts;
 [initial,global]$
