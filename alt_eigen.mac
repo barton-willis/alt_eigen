@@ -95,7 +95,11 @@ alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), q, lis
 maxdegree -- try to solve factors of the characteristic poly with degree n or less,
 orthogonal -- when true, eigenvectors with geometric multiplicity two or more are sent thru gramm schmidt.
 
-Computing the characteristic polynomial is much faster with ratmx : true. */
+Computing the characteristic polynomial is much faster with ratmx : true. 
+
+When gcd = spmod (the default) and algebraic is true, alt_eigen fails on the matrix 
+matrix([1,1/2,%i],[0,1,1/2],[0,1/2,1+%i]). This bug is reported as bug
+#4169 spmod bug when algebraic is true. */
 
 alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : [], cnd, u, ortho, ls, inflag : true,
  doallmxops : true],  
