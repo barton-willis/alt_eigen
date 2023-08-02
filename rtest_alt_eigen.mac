@@ -1,0 +1,26 @@
+(load(alt_eigen),0);
+0$
+
+/* Does alt_eigen check the input OK? The input should be a nonempty, square,
+unblocked matrix that has no floating point number inputs. */
+
+errcatch(alt_eigen(a+b));
+[]$
+
+errcatch(alt_eigen([a+b]));
+[]$
+
+errcatch(alt_eigen(matrix()));
+[]$
+
+errcatch(alt_eigen(matrix([1,2])));
+[]$
+
+errcatch(alt_eigen(genmatrix(lambda([a,b],genmatrix(lambda([c,d], random(12)),2,2)),2,2)));
+[]$
+
+errcatch(alt_eigen(matrix([3.14,2],[5,7])));
+[]$
+
+errcatch(alt_eigen(matrix([x+3.14,2],[5,7])));
+[]$
