@@ -55,7 +55,7 @@ polynomial (by solving linear equations).
 ratmx : true misbehaves with a non default value for matrix_element_mult.
 
 Some problems run very slowly with ratfac : true (example 
-matrix([0,0,0,1,0,1,1,1,0,1],[1,1,0,0,1,0,1,0,1,0],[1,1,1,1,0,0,0,1,0,1],[0,1,1,0,0,1,1,1,1,0],[0,0,1,0,1,0,1,0,1,0],[0,1,0,0,0,0,0,1,0,0],[1,1,0,0,0,0,0,0,1,1],[1,0,1,1,1,0,1,0,0,0],[0,1,1,0,0,1,0,1,0,1],[1,0,0,1,1,0,0,1,0,0]))
+matrix([0,0,0,1,0,1,1,1,0,1],[1,1,0,0,1,0,1,0,1,0],[1,1,1,1,0,0,0,1,0,1],[0,1,1,0,0,1,1,1,1,0],[0,0,1,0,1,0,1,0,1,0],[0,1,0,0,0,0,0,1,0,0],[1,1,0,0,0,0,0,0,1,1],[1,0,1,1,1,0,1,0,0,0],[0,1,1,0,0,1,0,1,0,1],[1,0,0,1,1,0,0,1,0,0])
 
 bug: (can cause trouble for matrices with floating point entries)
 
