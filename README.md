@@ -50,7 +50,7 @@ Setting `maxdegree` to two, we get explicit expressions for all three eigenvecto
 (%o50)	assuming(notequal(-64*(q-2)*q,0),[z^2=-(-4*q*z-4*z+4*q+1)/4,
           [matrix([2],[z-1])]])
 ~~~
-The method recognizes that `64*(q-2)q = 0` is q special case. Pasting in `q=5,` we get the eigenvectors of `matrix([1,2],[-1/8,5])`
+The method recognizes that `64*(q-2)q = 0` is a special case. Pasting in `q=5,` we get the eigenvectors of `matrix([1,2],[-1/8,5])`
 ~~~
 (%i51)	subst(q=5,%);
 (%o51)	[z^2=-(21-24*z)/4,[matrix([2],[z-1])]]
@@ -76,4 +76,23 @@ And a `5 x 5` case
 		[28*z^3+5828*z^2-513901*z+12740025],
 		[74*z^3-6689*z^2+297172*z+2073267],
 		[z^4-269*z^3+15390*z^2-617117*z+3176427])]]
+~~~
+For a degenerate eigenvalue, each eigenvector appears in the list; for example
+~~~
+(%i2)	M : matrix([15714,  24872,  12436], [-1450, -2151,  -1160],[-7025,  -11240, -5451]);
+(M)	matrix([15714,24872,12436],
+		[-1450,-2151,-1160],
+		[-7025,-11240,-5451])
+
+(%i3)	alt_eigen(M,'var=z);
+(%o3)	[z=169,[matrix([-8],[5],[0]),matrix([0],[1],[-2])],
+         z=7774,[matrix([3109],[-290],[-1405])]]
+~~~
+To apply Gram-Schmidt to degenerate eigenvectors, use the optional argument 
+`'orthogonal=true`
+~~~
+(%i6)	alt_eigen(M,'var=z,'orthogonal=true);
+(%o6)	[z=169,[matrix([40/89],[64/89],[-2]),
+                matrix([-8],[5],[0])],
+		z=7774,[matrix([3109],[-290],[-1405])]]
 ~~~
