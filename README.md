@@ -23,7 +23,11 @@ A 3 by 3 case:
  ~~~
  (%i21)	M : matrix([1,2,3],[4,5,6],[7,8,9]);
  (%i21)	matrix([1,2,3],	[4,5,6],[7,8,9])
-
+~~~
+Since zero is the only degree one factor of the characteristic polynomial, the
+other two eigenvectors are expressed in terms of the other factor, namely 
+`z^2=15*z+18;` we have
+~~~
 (%i22)	alt_eigen(M, 'var = z, 'maxdegree = 1);
 (%o22)	[z^2=15*z+18,[matrix([26-2*z],[2-z],[-22])],z=0,
         [matrix([-1],[2],[-1])]]
