@@ -31,7 +31,9 @@ other two eigenvectors are expressed in terms of the other factor, namely
 (%i22)	alt_eigen(M, 'var = z, 'maxdegree = 1);
 (%o22)	[z^2=15*z+18,[matrix([26-2*z],[2-z],[-22])],z=0,
         [matrix([-1],[2],[-1])]]
-
+~~~
+Setting `maxdegree` to two, we get explicit expressions for all three eigenvectors
+~~~
 (%i23)	alt_eigen(M, 'var = z, 'maxdegree = 2);
 (%o23)	[z=(3*sqrt(33)+15)/2,[matrix([11-3*sqrt(33)],[2-(3*sqrt(33)+15)/2],
 		[-22]
