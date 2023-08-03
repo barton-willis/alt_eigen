@@ -22,18 +22,24 @@ simplifying('assuming,'simp_assuming)$
 
 float_free_p(e) := if mapatom(e) then not (floatnump(e) or bfloatp(e)) else every(lambda([s], float_free_p(s)), args(e));
 
-/* Gram-Schmidt assuming that p vanishes. 
+/* Apply the Gram-Schmidt process to the list of column vectors in v. The second
+   argument p should be an equation of the form variable = XXX. Following
+   each projection, substitute p into result. 
 Last I tried, doing the fullratsubst inside proj speeds some calculations. */
 
 mygramschmidt(v,p) := block([u : [], proj, dot, uk, doallmxops : true, scalarmatrixp : true],   
    dot : lambda([a,b], conjugate(a).b),
    proj : lambda([a,b], fullratsubst(p, dot(a,b)*a/dot(a,a))),    
    for vk in v do (         
-      uk : vk - lsum(proj(s,vk), s, u),
-      uk : fullratsubst(p, ratexpand(uk)),        
+      uk : ratsimp(vk - lsum(proj(s,vk), s, u)),
       if some(lambda([s], is(s # 0)), uk) then push(uk, u)),  
    u)$
 
+/* It's not checked, but the first argument p should be a polynomial in the 
+   variable z. When degree(p) <= deg, attempt to find the zeros of p. When
+   that is successful, return a list of the solutions; and when solve is
+   not successful, solve p for its highest power and return the one member
+   list of solutions.*/
 maybe_solve(p,z,deg) := block([n, lt, inflag : true, sol,  programmode : true, globalsolve : false, 
    solveexplicit : true, breakup : false, solvenullwarn : false, solvefactors : true],   
    p : ratexpand(p), 
