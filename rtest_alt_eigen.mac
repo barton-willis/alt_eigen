@@ -103,6 +103,6 @@ facts();
 contexts;
 [initial,global]$
 
-/* The values of gcd, algebraic, and domain should be unaltered.*/
+/* The values of gcd, algebraic, domain, and resultant should be unaltered.*/
 reset(gcd,algebraic,domain, resultant);
 []$
