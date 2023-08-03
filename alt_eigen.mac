@@ -24,8 +24,7 @@ float_free_p(e) := if mapatom(e) then not (floatnump(e) or bfloatp(e)) else ever
 
 /* Apply the Gram-Schmidt process to the list of column vectors in v. The second
    argument p should be an equation of the form variable = XXX. Following
-   each projection, substitute p into result. 
-Last I tried, doing the fullratsubst inside proj speeds some calculations. */
+   each projection, substitute p into result. */
 
 mygramschmidt(v,p) := block([u : [], proj, dot, uk, doallmxops : true, scalarmatrixp : true],   
    dot : lambda([a,b], conjugate(a).b),
