@@ -1,4 +1,4 @@
-(load("alt_eigen.mac"),kill(facts),reset(gcd,algebraic,domain),0);
+(load("alt_eigen.mac"),kill(facts),reset(gcd,algebraic,domain, resultant),0);
 0$
 
 /* Does alt_eigen check the input correctly? The input should be a nonempty, square,
@@ -104,5 +104,5 @@ contexts;
 [initial,global]$
 
 /* The values of gcd, algebraic, and domain should be unaltered.*/
-reset(gcd,algebraic,domain);
+reset(gcd,algebraic,domain, resultant);
 []$
