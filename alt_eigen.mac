@@ -22,9 +22,18 @@ simplifying('assuming,'simp_assuming)$
 
 float_free_p(e) := if mapatom(e) then not (floatnump(e) or bfloatp(e)) else every(lambda([s], float_free_p(s)), args(e));
 
-/* Apply the Gram-Schmidt process to the list of column vectors in v. The second
-   argument p should be an equation of the form variable = XXX. Following
-   each projection, substitute p into result. */
+/* Apply the Gram-Schmidt process to the list of column vectors with equal size 
+   (matrices) in v. The second argument p should be an equation of the form 
+   XXX = YYY. Following each projection, substitute (using fullratsubst) p into 
+   the result of the projection. 
+
+   The inner product is a.b = conjugate(a).b. This could be generalized to  
+   transpose(conjugate(a)).b). Then the value of matrix_element_transpose would
+   matter. But I don't see an advantage to doing this.
+
+   This function isn't intended to be a user-level function. Accordingly, it doesn't
+   check that its arguments are OK. Generally, inappropriate arguments results in
+   an unclear error message. */
 
 mygramschmidt(v,p) := block([u : [], proj, dot, uk, doallmxops : true, scalarmatrixp : true],   
    dot : lambda([a,b], conjugate(a).b),
