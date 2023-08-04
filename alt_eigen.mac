@@ -31,7 +31,7 @@ float_free_p(e) := if mapatom(e) then not (floatnump(e) or bfloatp(e)) else ever
    transpose(conjugate(a)).b). Then the value of matrix_element_transpose would
    matter. But I don't see an advantage to doing this.
 
-   This function isn't intended to be a user-level function. Accordingly, it doesn't
+   This function isn't intended to be an user-level function. Accordingly, it doesn't
    check that its arguments are OK. Generally, inappropriate arguments results in
    an unclear error message. */
 
