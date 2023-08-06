@@ -1,0 +1,84 @@
+/*  Copyright 2023 by Barton Willis
+    Attribution 4.0 International (CC BY 4.0) 
+    
+    Maxima code for expressing eigenvectors in terms of the eigenvalues.
+
+    This code isn't as polished as alt_eigen, but it aims to be algorithically
+    simplier and easier to understand and fix. Plus, it introduces a simplifying 
+    version of span--something that might eventually make its way into the linear 
+    algebra package.  
+
+    Differences with alt_eigen:
+
+      (a) alt_eigen2 doesn't have the maxdegree feature
+
+      (b) alt_eigen2 doesn't check its arguments (unblocked square matrix, ...)
+
+      (c) alt_eigen2 uses a simplifying span operator for the eigenspace
+
+      (d) alt_eigen2 returns a list of the form 
+            [[eigenvalue condition, eigenspace],...,[[eigenvalue condition, eigenspace]]
+         but alt_eigen uses returns a list of the form
+            [eigenvalue condition, eigenspace, eigenvalue condition, eigenspace, ...]
+        
+    
+    */
+   
+(load('lrats),load('simplifying),load("integer_sequence"));
+
+/* A simplifying span function. So that it doesn't interfer with the linear algebra
+   package, we'll name it sspan (for simplifying span), not span.
+
+   Removes vectors that are explicitly zero, normalizes vectors by removing 
+   the gcd of its members, removes explicitly redundant vectors, and sorts 
+   the vectors. This could do more (optionally do Gram-Schmidt, for example),  
+   but for now, this is OK.*/
+
+simp_sspan([v]) := block([vv : [], normalize],
+   normalize : lambda([q], block([],
+       q : first(args(transpose(q))),
+       q : apply('ezgcd,q),
+       q : rest(q),
+       q : funmake('matrix,[q]),
+       q : transpose(q))),
+   for vk in v do (
+     if some(lambda([q], q#0), vk) then push(normalize(vk), vv)),
+  simpfunmake('sspan, listify(setify(vv))));
+
+simplifying('sspan,'simp_sspan)$
+
+alt_eigen2(M,[extra]) := block([z,p,pp,r,c, λ : gensym(), inflag : true,MM,xxx,aaa, pred,es :[]],
+     z : assoc('var, extra, λ),
+     [r,c] : matrix_size(M),
+     p : ratexpand(charpoly(M,λ)),
+     /* solve p for its leading power */
+     pp : solve(p,λ^hipow(p,λ)),
+     p : gfactor(p),
+     M : M - λ*identfor(M),
+     M : addcol(transpose(M),identfor(M)),
+     M : gfactor(triangularize(M)),
+     M : lratsubst(pp,M),
+     p : if not mapatom(p) and op(p) = "*" then args(p) else [p],
+     p : sublist(args(p), lambda([q], not freeof(λ,q))),
+     for pk in p do (
+        ppk : solve(pk, λ^hipow(pk,λ)),
+        MM : fullratsubst(ppk,M),
+        for rr : 1 thru r do (
+            xxx : [],
+            pred : map(lambda([i], inpart(MM,rr,i)), 1 .. c),
+            pred : map(lambda([q], resultant(pk,q,λ)),pred),
+            pred : every(lambda([q],is(equal(q,0))),pred),
+            if pred then (
+               aaa : map(lambda([i], inpart(MM,rr,i)), c+1 .. 2*c),
+               aaa : funmake('matrix, [aaa]),
+               aaa : subst(λ = z, transpose(aaa)),
+               push(aaa,xxx))),
+               if aaa # [] then (
+                  push([subst(λ = z, first(ppk)), funmake('sspan, [aaa])], es))),
+         es);
+         
+            
+
+  
+  
+
