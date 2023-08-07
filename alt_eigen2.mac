@@ -6,7 +6,11 @@
     This code isn't as polished as alt_eigen, but it aims to be algorithically
     simplier and easier to understand and fix. Plus, it introduces a simplifying 
     version of span--something that might eventually make its way into the linear 
-    algebra package.  
+    algebra package. 
+    
+    This version works by using triangularize directly on the matrix  M - λ I | I to 
+    find  the nullspace. 
+
 
     Differences with alt_eigen:
 
@@ -47,34 +51,37 @@ simp_sspan([v]) := block([vv : [], normalize],
 
 simplifying('sspan,'simp_sspan)$
 
-alt_eigen2(M,[extra]) := block([z,p,pp,r,c, λ : gensym(), inflag : true,MM,xxx,aaa, pred,es :[]],
+matrix_gcd_reduce(M) := map(lambda([q], rest(apply('ezgcd,q))),M);
+
+alt_eigen2(M,[extra]) := block([z,p,pp,r,c, λ : gensym(), inflag : true,MM,xxx,aaa, 
+     pred,es :[]],
      z : assoc('var, extra, λ),
      [r,c] : matrix_size(M),
      p : ratexpand(charpoly(M,λ)),
-     /* solve p for its leading power */
-     pp : solve(p,λ^hipow(p,λ)),
-     p : gfactor(p),
      M : M - λ*identfor(M),
      M : addcol(transpose(M),identfor(M)),
-     M : gfactor(triangularize(M)),
-     M : lratsubst(pp,M),
+     p : gfactor(p),
      p : if not mapatom(p) and op(p) = "*" then args(p) else [p],
-     p : sublist(args(p), lambda([q], not freeof(λ,q))),
-     for pk in p do (
+     pp : sublist(args(p), lambda([q], not freeof(λ,q))),
+     for pk in pp do (
+        pk : ratexpand(pk),
         ppk : solve(pk, λ^hipow(pk,λ)),
-        MM : fullratsubst(ppk,M),
+        MM : lratsubst(ppk,M),
+        MM : triangularize(MM),
+        MM : lratsubst(ppk,MM),
+        xxx : [],
         for rr : 1 thru r do (
-            xxx : [],
             pred : map(lambda([i], inpart(MM,rr,i)), 1 .. c),
             pred : map(lambda([q], resultant(pk,q,λ)),pred),
             pred : every(lambda([q],is(equal(q,0))),pred),
+         
             if pred then (
-               aaa : map(lambda([i], inpart(MM,rr,i)), c+1 .. 2*c),
+               aaa : map(lambda([i], inpart(MM,rr,i)), (c+1) .. (2*c)),
                aaa : funmake('matrix, [aaa]),
                aaa : subst(λ = z, transpose(aaa)),
                push(aaa,xxx))),
-               if aaa # [] then (
-                  push([subst(λ = z, first(ppk)), funmake('sspan, [aaa])], es))),
+            if xxx # [] then (
+               push([subst(λ = z, first(ppk)), funmake('sssssspan, xxx)], es))),
          es);
          
             
