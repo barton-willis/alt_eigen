@@ -77,7 +77,15 @@ bug: (can cause trouble for matrices with floating point entries)
  (%o4)/R/ -8.0/5
  (%i5) expand(%,0,0);
 
-For algebraic numbers, sometimes subres is better than spmod. */
+For algebraic numbers, sometimes subres is better than spmod.
+
+Explanation:
+
+Let p = a0 + a1 z + ... + am z^m.
+
+1) p <-  p / am.  After this, p is monic
+2) At the conclusion of the while n > -1 loop, we have lk = p(M) 
+*/
 
 alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), q, listarith:true, scalarmatrixp:false, 
     doallmxops : true, ratfac : false, ratmx : false],
@@ -114,7 +122,7 @@ matrix([1,1/2,%i],[0,1,1/2],[0,1/2,1+%i]). This bug is reported as bug
 #4169 spmod bug when algebraic is true. */
 
 alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : [], cnd, u, ortho, ls, inflag : true,
- doallmxops : true],  
+ doallmxops : true, gcd : subres, algebraic : true],  
   if not matrixp(m) then error("The first argument must be a matrix"),  
   if blockmatrixp(m) then error("The first argument must be an unblocked matrix"),
   if not float_free_p(m) then error("The function alt_eigen does not work for matrices with floating point entries"),
