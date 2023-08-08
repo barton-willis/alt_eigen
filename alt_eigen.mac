@@ -119,7 +119,12 @@ Computing the characteristic polynomial is much faster with ratmx : true.
 
 When gcd = spmod (the default) and algebraic is true, alt_eigen fails on the matrix 
 matrix([1,1/2,%i],[0,1,1/2],[0,1/2,1+%i]). This bug is reported as bug
-#4169 spmod bug when algebraic is true. */
+#4169 spmod bug when algebraic is true. Additionally, with the default values for
+gcd (spmod) and algebraic (false), we have
+
+p :  z^2 + (2*%i - 2)*z - 2*%i, gcd(p, diff(p,z)) # z+%i-1.
+
+So let's set gcd : subres and algebraic : true */
 
 alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : [], cnd, u, ortho, ls, inflag : true,
  doallmxops : true, gcd : subres, algebraic : true],  
@@ -138,8 +143,7 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
 
   if every(lambda([s], s=0),m) then return([u = 0, makelist(col(identfor(m),k),k,1,c)]),
 
-  /* p :  z^2 + (2*%i - 2)*z - 2*%i, gcd(p, diff(p,z)) # z+%i-1 with default gcd. */
-  block([ratmx : false, algebraic : true], 
+  block([ratmx : false], 
      p : charpoly(m, z),  
      p : gfactor(p),
      pp : gfactor(p / gcd(p, diff(p,z))),
