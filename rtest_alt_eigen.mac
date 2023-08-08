@@ -100,6 +100,16 @@ block([gcd : 'subres, algebraic : true], alt_eigen(M, 'var = z, 'orthogonal = tr
         matrix([0],	[24*%i+18],	[(24*%i-7)/2],[-((7*%i+24)/2)]),
         matrix([0],[0],[3*%i-4],[4*%i+3])]]$
 
+/* Example of  algebraic multiplicity =/= geometric multiplicity. */
+alt_eigen(matrix([1,2],[0,1]),'var = z);
+[z=1,[matrix([1],[0])]]$
+
+alt_eigen(matrix([1,2],[3,2]),'var = z);
+[z=-1,[matrix([-1],[1])],z=4,[matrix([-2],[-3])]]$
+
+alt_eigen(matrix([-1,-1,-2],[2,2,1],[6,2,6]),'var=q);
+[q=2,[matrix([1],[1],[-2])],q=3,[matrix([-1],[0],[2])]]$
+
 (remvalue(M),0);
 0$
 
