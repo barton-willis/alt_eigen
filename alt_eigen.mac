@@ -20,8 +20,31 @@ simp_assuming(pred,f) := block([prederror : false, bool : is(pred)],
 
 simplifying('assuming,'simp_assuming)$
 
+/* A simplifying span function. So that it doesn't interfer with the linear algebra
+   package, for now, we'll name it sspan (for simplifying span), not span.
+
+   Removes vectors that are explicitly zero, normalizes vectors by removing 
+   the gcd of its members, removes explicitly redundant vectors, and sorts 
+   the vectors. This could do more (optionally do Gram-Schmidt, for example),  
+   but for now, this is OK.*/
+
+   simp_sspan([v]) := block([vv : [], normalize],
+   normalize : lambda([q], block([],
+       q : first(args(transpose(q))),
+       q : apply('ezgcd,q),
+       q : rest(q),
+       q : funmake('matrix,[q]),
+       q : transpose(q))),
+   for vk in v do (
+     if some(lambda([q], q#0), vk) then push(normalize(vk), vv)),
+  simpfunmake('sspan, listify(setify(vv))));
+
+simplifying('sspan,'simp_sspan)$
+
+
 float_free_p(e) := if mapatom(e) then not (floatnump(e) or bfloatp(e)) else every(lambda([s], float_free_p(s)), args(e));
 
+   
 /* Apply the Gram-Schmidt process to the list of column vectors with equal size 
    (matrices) in v. The second argument p should be an equation of the form 
    XXX = YYY. Following each projection, substitute (using fullratsubst) p into 
@@ -41,7 +64,7 @@ mygramschmidt(v,p) := block([u : [], proj, dot, uk, doallmxops : true, scalarmat
    for vk in v do (         
       uk : ratsimp(vk - lsum(proj(s,vk), s, u)),
       if some(lambda([s], is(s # 0)), uk) then push(uk, u)),  
-   u)$
+   apply('sspan, u))$
 
 /* It's not checked, but the first argument p should be a polynomial in the 
    variable z. When degree(p) <= deg, attempt to find the zeros of p. When
@@ -77,15 +100,7 @@ bug: (can cause trouble for matrices with floating point entries)
  (%o4)/R/ -8.0/5
  (%i5) expand(%,0,0);
 
-For algebraic numbers, sometimes subres is better than spmod.
-
-Explanation:
-
-Let p = a0 + a1 z + ... + am z^m.
-
-1) p <-  p / am.  After this, p is monic
-2) At the conclusion of the while n > -1 loop, we have lk = p(M) 
-*/
+For algebraic numbers, sometimes subres is better than spmod.*/
 
 alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), q, listarith:true, scalarmatrixp:false, 
     doallmxops : true, ratfac : false, ratmx : false],
@@ -152,16 +167,17 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
      cnd : gfactor(resultant(pp,diff(pp,z),z))),
  
   p : if not mapatom(p) and op(p) = "*" then args(p) else [p],
-  p : sublist(p, lambda([s], not freeof(z,s))),  
+  p : sublist(p, lambda([s], not freeof(z,s))), 
+  p : map('gfactor, p),
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
     lk : alt_eigen_h(m,r,pk,z), 
     lk : fullratsubst(first(maybe_solve(pk,z,1)), lk), 
-    lk : map(lambda([i], col(lk,i)), makelist(k,k,1,ord)),
-    lk : sublist(lk, lambda([s], some(lambda([w], w # 0), s))),   
+    lk : columnspace(lk),
+    lk : block([opsubst : true], subst('span = 'sspan, lk)),
     pk : maybe_solve(pk, z, hp), 
     for pkl in pk do (
        ls : subst(pkl, lk),
        if ortho then ls : mygramschmidt(ls, pkl),
-       es : append([pkl, ls], es))),
+       es : cons([pkl, ls], es))),
   assuming(notequal(cnd,0), subst(z=u,es)));

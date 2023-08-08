@@ -33,52 +33,58 @@ alt_eigen(matrix([0]), 'var=z);
 [z=0,[matrix([1])]]$
 
 alt_eigen(matrix([2]), 'var=z);
-[z=2,[matrix([1])]]$
+[[z=2,sspan(matrix([1]))]]$
 
 alt_eigen(matrix([0,0],[0,0]), 'var=z);
 [z=0,[matrix([1],[0]),matrix([0],[1])]]$
 
 alt_eigen(matrix([2,0],[0,2]), 'var=z);
-[z=2,[matrix([0],[1]),matrix([1],[0])]]$
+[[z=2,sspan(matrix([0],[1]),matrix([1],[0]))]]$
 
 alt_eigen(matrix([2,0],[0,8]), 'var=z);
-[z=2,[matrix([1],[0])],z=8,[matrix([0],[-1])]]$
+[[z=2,sspan(matrix([1],[0]))],[z=8,sspan(matrix([0],[-1]))]]$
 
+/* A better answer is [[z^2=%i,sspan(matrix([%i],[z])]]. But this
+   answer isn't wrong--the members of sspan aren't certain to be
+   linearly independent.*/
 alt_eigen(matrix([0,%i],[1,0]),'var=z);
-[z^2=%i,[matrix([%i],[z])]]$
+[[z^2=%i,sspan(matrix([%i],[z]),matrix([z],[1]))]]$
 
 alt_eigen(matrix([1,2,3],[4,5,6],[0,0,2*sqrt(3)+3]),'var=z);
-[[z=3-2*sqrt(3),matrix([3-3^(3/2)],	[12-2*3^(3/2)],	[0])],
- [z=2*sqrt(3)+3,matrix([3^(3/2)+3],[2*3^(3/2)+12],[0])]]$
+[[z^2=6*z+3,sspan(matrix([2],[z-1],[0]),
+                 matrix([z-5],[4],[0]))],
+[z=2*sqrt(3)+3,sspan(matrix([-sqrt(3)-1],[-2*sqrt(3)-4],[0]))]]$
 
 /* Does the assuming function work OK? */
 block([xxx : alt_eigen(matrix([1,0,2],[0,1,8],[0,0,q]), 'var=z)],[xxx, subst(q=28,xxx)]);
-[assuming(notequal((q-1)^2,0),[z=q,[matrix([-2],[-8],[1-q])],
-    z=1,[matrix([0],[1],[0]),matrix([1],[0],[0])]]),
-    [z=28,[matrix([-2],[-8],[-27])],
-    z=1,[matrix([0],[1],[0]),matrix([1],[0],[0])]]]$
+[assuming(notequal((q-1)^2,0),[[z=q,sspan(matrix([-2],[-8],[1-q]))],
+                               [z=1,sspan(matrix([0],[1],[0]),
+                                          matrix([1],[0],[0]))]]),
+[[z=28,sspan(matrix([-2],[-8],[-27]))],
+ [z=1,sspan(matrix([0],[1],[0]),matrix([1],[0],[0]))]]]$
 
 /* See #4169 spmod bug when algebraic is true */
 (M : matrix([1,1/2,%i],[0,1,1/2],[0,1/2,1+%i]),0);
 0$
 
 block([gcd : subres], alt_eigen(M,'var=z));
-[z=(%i+2)/2,[matrix([-1],[%i],[-1])],z=1,[matrix([1],[0],[0])]]$
+[[z=(%i+2)/2,sspan(matrix([-1],[%i],[-1]))],
+ [z=1,sspan(matrix([1],[0],[0]))]]$
 
 block([gcd : spmod], alt_eigen(M,'var=z));
-[z=(%i+2)/2,[matrix([-1],[%i],[-1])],z=1,[matrix([1],[0],[0])]]$
+[[z=(%i+2)/2,sspan(matrix([-1],[%i],[-1]))],
+ [z=1,sspan(matrix([1],[0],[0]))]]$
 
 (M : matrix([15714,	24872,	12436],	[-1450,	-2151,	-1160],[-7025,	-11240,	-5451]),0);
 0$
 
 alt_eigen(M, var='z,maxdegree=1,'orthogonal=false);
-[z=169,[matrix([-8],[5],[0]),matrix([0],[1],[-2])],
-z=7774,[matrix([3109],[-290],[-1405])]]$
+[[z=169,sspan(matrix([-8],[5],[0]),matrix([0],[1],[-2]))],
+  [z=7774,sspan(matrix([3109],[-290],[-1405]))]]$
 
 alt_eigen(M, var='z,maxdegree=1,'orthogonal=true);
-    [z=169,[matrix([40/89],[64/89],[-2]),matrix([-8],[5],[0])],
-    z=7774,[matrix([3109],[-290],[-1405])]]$
-
+    [[z=169,sspan(matrix([-8],[5],[0]),matrix([1780],[32],[-1]))],
+     [z=7774,sspan(matrix([3109],[-290],[-1405]))]]$
 
 (M : matrix(
 		[(83241*%i+42732)/380320,-(7992*%i-2331)/95080,	(3996*%i+2997)/47540,-(2997*%i-3996)/47540],
@@ -88,27 +94,28 @@ alt_eigen(M, var='z,maxdegree=1,'orthogonal=true);
 0$
 
 block([gcd : 'subres, algebraic : true], alt_eigen(M, 'var = z, 'orthogonal = false));
-[z=(27*%i-36)/800,[matrix([-740],[-1294],[1061],[967])],
- z=(9*%i+3)/40,[matrix([0],	[0],[3*%i-4],[4*%i+3]),
- matrix([0],[24*%i+18],	[24*%i-7],[0]),
- matrix([288*%i-84],[128-21*%i],[0],[0])]]$
+[[z=(27*%i-36)/800,sspan(matrix([-740],[-1294],	[1061],	[967]))],
+ [z=(9*%i+3)/40,sspan(matrix([0],[0],[3*%i-4],[4*%i+3]),
+   matrix([0],[24*%i+18],[24*%i-7],[0]),
+   matrix([288*%i-84],[128-21*%i],[0],[0]))]]$
 
 block([gcd : 'subres, algebraic : true], alt_eigen(M, 'var = z, 'orthogonal = true));
-	[z=(27*%i-36)/800,[matrix([-740],[-1294],[1061],[967])],
-    z=(9*%i+3)/40,[matrix([288*%i-84],[-((525*%i-3200)/97)],[-((2694*%i+2808)/97)],
-		[-((2808*%i-2694)/97)]),
-        matrix([0],	[24*%i+18],	[(24*%i-7)/2],[-((7*%i+24)/2)]),
-        matrix([0],[0],[3*%i-4],[4*%i+3])]]$
+[[z=(27*%i-36)/800,sspan(matrix([-740],[-1294],[1061],[967]))],
+ [z=(9*%i+3)/40,sspan(matrix([0],[0],[3*%i-4],[4*%i+3]),
+ matrix([0],[24*%i+18],[24*%i-7],[-(7*%i)-24]),
+ matrix([288*%i-84],[3200-525*%i],[-(2694*%i)-2808],[2694-2808*%i]))]]$	
 
 /* Example of  algebraic multiplicity =/= geometric multiplicity. */
 alt_eigen(matrix([1,2],[0,1]),'var = z);
-[z=1,[matrix([1],[0])]]$
+[[z=1,sspan(matrix([1],[0]))]]$
 
 alt_eigen(matrix([1,2],[3,2]),'var = z);
-[z=-1,[matrix([-1],[1])],z=4,[matrix([-2],[-3])]]$
+[[z=-1,sspan(matrix([-1],[1]))],
+ [z=4,sspan(matrix([-2],[-3]))]]$
 
 alt_eigen(matrix([-1,-1,-2],[2,2,1],[6,2,6]),'var=q);
-[q=2,[matrix([1],[1],[-2])],q=3,[matrix([-1],[0],[2])]]$
+[[q=2,sspan(matrix([1],[1],[-2]))],
+ [q=3,sspan(matrix([-1],[0],[2]))]]$
 
 (remvalue(M),0);
 0$
