@@ -170,12 +170,10 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
   if not freeof(u,m) then error("The first argument must not depend on ", u),
 
   if every(lambda([s], s=0),m) then return([u = 0, makelist(col(identfor(m),k),k,1,c)]),
-  
-  block([ratmx : false], 
-     p : charpoly(m, z),  
-     p : gfactor(p),
-     pp : gfactor(p / gcd(p, diff(p,z))),
-     cnd : gfactor(resultant(pp,diff(pp,z),z))),
+  p : charpoly(m, z),  
+  p : gfactor(p),
+  pp : gfactor(p / gcd(p, diff(p,z))),
+  cnd : gfactor(resultant(pp,diff(pp,z),z)),
  
   p : if not mapatom(p) and op(p) = "*" then args(p) else [p],
   p : sublist(p, lambda([s], not freeof(z,s))), 
