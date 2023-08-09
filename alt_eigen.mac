@@ -176,7 +176,7 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
  
   p : if not mapatom(p) and op(p) = "*" then args(p) else [p],
   p : sublist(p, lambda([s], not freeof(z,s))), 
-  p : map('gfactor, p),
+  /* p : map('gfactor, p),*/
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
     lk : alt_eigen_h(m,r,pk,z), 
