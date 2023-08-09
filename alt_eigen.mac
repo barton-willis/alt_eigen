@@ -101,7 +101,9 @@ Instead of handing alt_eigen_h the characteristic polynomial, it's possible to b
 in the while n > 0 loop. Once the loop finishes, the requirement that lk vanishes determines the characteristic 
 polynomial (by solving linear equations).
 
-ratmx : true misbehaves with a non default value for matrix_element_mult.
+ratmx : true misbehaves with a non default value or matrix_element_mult. And
+ratmx : true doesn't seem to work with nullspace. Let's locally set ratmx to 
+false for the call to nullspace.
 
 Some problems run very slowly with ratfac : true (example 
 matrix([0,0,0,1,0,1,1,1,0,1],[1,1,0,0,1,0,1,0,1,0],[1,1,1,1,0,0,0,1,0,1],[0,1,1,0,0,1,1,1,1,0],[0,0,1,0,1,0,1,0,1,0],[0,1,0,0,0,0,0,1,0,0],[1,1,0,0,0,0,0,0,1,1],[1,0,1,1,1,0,1,0,0,0],[0,1,1,0,0,1,0,1,0,1],[1,0,0,1,1,0,0,1,0,0])
@@ -115,7 +117,7 @@ bug: (can cause trouble for matrices with floating point entries)
 For algebraic numbers, sometimes subres is better than spmod.*/
 
 alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), q, listarith:true, scalarmatrixp:false, 
-    doallmxops : true, ratfac : false, ratmx : false],
+    doallmxops : true, ratfac : false],
   vn : rat(ident(r)),
   p : rat(p), 
   n : hipow(p,z),  
@@ -128,7 +130,7 @@ alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), q, lis
      n : n -1,
      if n > -1 then l : l + z^n * lk), 
 
-  lk : nullspace(lk),
+  lk : block([ratmx : false], nullspace(lk)),
   for ls in lk do (
      ls : l . ls,       
      e : addcol(e, ls)),

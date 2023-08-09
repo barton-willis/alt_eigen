@@ -1,6 +1,19 @@
 (load("alt_eigen.mac"),kill(facts),reset(gcd,algebraic,domain,resultant),0);
 0$
 
+(check_eigenspace(M) := block([λ,xxx,pk,es,MM, OK : true],
+    xxx : alt_eigen(M,'var = λ),
+    for xk in xxx do (
+        pk : first(xk),
+        es : second(xk),
+        MM : matrix(),
+        for ck in es do (
+            MM : addcol(MM, ck)),
+        MM : fullratsubst(pk, (M - λ*identfor(M) ) . MM),
+        OK : OK and every(lambda([q],q=0),MM)),
+    OK),0);
+0$
+
 /* Does alt_eigen check the input correctly? The input should be a nonempty, square,
 and unblocked matrix that has no entries that involve a floating point number. */
 
@@ -101,6 +114,9 @@ block([gcd : 'subres, algebraic : true], alt_eigen(M, 'var = z, 'orthogonal = tr
  matrix([0],[24*%i+18],[24*%i-7],[-(7*%i)-24]),
  matrix([288*%i-84],[3200-525*%i],[-(2694*%i)-2808],[2694-2808*%i]))]]$	
 
+check_eigenspace(M);
+true$
+
 /* Example of  algebraic multiplicity =/= geometric multiplicity. */
 alt_eigen(matrix([1,2],[0,1]),'var = z);
 [[z=1,sspan(matrix([1],[0]))]]$
@@ -115,6 +131,11 @@ alt_eigen(matrix([-1,-1,-2],[2,2,1],[6,2,6]),'var=q);
 
 (remvalue(M),0);
 0$
+
+check_eigenspace(matrix([15714,24872,12436],	
+                         [-1450,-2151,-1160],
+		                     [-7025,-11240,-5451]));
+true$
 
 /* Did the code leak any facts or contexts?*/
 facts();
