@@ -1,6 +1,6 @@
 # alt eigen
 
- This is a Maxima language code for expressing eigenvectors in terms of eigenvalues.
+ This is a Maxima language package for expressing eigenvectors in terms of eigenvalues.
 
 To use this package, you will need to load it manually. Assuming the file 
 `alt_eigen.mac` is in a path that Maxima can find, load it using the command.
