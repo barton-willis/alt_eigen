@@ -18,6 +18,7 @@ the command
          [z=2,sspan(matrix([-2],[-1]))]]
 ~~~
 The last two arguments to `alt_eigen` are optional, and they can be in any order.
+
 The argument `'var=z` uses the name `z` for the eigenvalue, and the argument `maxdegree=1` instructs the code to solve every factor of the characteristic polynomial that has degree at most one. The characteristic polynomial is factored over
 the gaussian integers.
 
@@ -80,4 +81,23 @@ To apply Gram-Schmidt to the eigenspace, use the optional argument
 (%o1)	[[z=169,sspan(matrix([-8],[5],[0]),
              matrix([20],[32],[-89]))],
 		 [z=7774,sspan(matrix([3109],[-290],[-1405]))]]
+~~~
+
+We end with a $5\times$ example
+
+~~~
+(%i4)	M : genmatrix(lambda([a,b], if a=b then 1 elseif abs(a-b)=1 then -q else 0),5,5);
+(%o4)	matrix([1,-q,0,	0,0],
+		 [-q,1,-q,0,0],
+		 [0,-q,1,-q,0],
+		 [0,0,-q,1,-q],
+		 [0,0,0,-q,1]
+		 )
+(%i5)	assume(notequal(q,0))$
+
+(%i6)	alt_eigen(M, 'var=z,maxdegree=1);
+(%o6)	[[z^2=2*z+3*q^2-1,sspan(matrix([-q],[z-1],[-2*q],[z-1],[-q]))],
+         [z=1-q,sspan(matrix([1],[1],[0],[-1],[-1]))],
+		 [z=q+1,sspan(matrix([1],[-1],[0],[1],[-1]))],
+		 [z=1,sspan(matrix([-1],[0],[1],[0],[-1]))]]
 ~~~
