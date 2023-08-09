@@ -44,16 +44,12 @@ alt_eigen(matrix([2,0],[0,2]), 'var=z);
 alt_eigen(matrix([2,0],[0,8]), 'var=z);
 [[z=2,sspan(matrix([1],[0]))],[z=8,sspan(matrix([0],[-1]))]]$
 
-/* A better answer is [[z^2=%i,sspan(matrix([%i],[z])]]. But this
-   answer isn't wrong--the members of sspan aren't certain to be
-   linearly independent.*/
 alt_eigen(matrix([0,%i],[1,0]),'var=z);
-[[z^2=%i,sspan(matrix([%i],[z]),matrix([z],[1]))]]$
+[[z^2=%i,sspan(matrix([%i],[z]))]]$
 
 alt_eigen(matrix([1,2,3],[4,5,6],[0,0,2*sqrt(3)+3]),'var=z);
-[[z^2=6*z+3,sspan(matrix([2],[z-1],[0]),
-                 matrix([z-5],[4],[0]))],
-[z=2*sqrt(3)+3,sspan(matrix([-sqrt(3)-1],[-2*sqrt(3)-4],[0]))]]$
+[[z^2=6*z+3,sspan(matrix([2],[z-1],[0]))],
+ [z=2*sqrt(3)+3,sspan(matrix([-sqrt(3)-1],[-(2*sqrt(3))-4],[0]))]]$
 
 /* Does the assuming function work OK? */
 block([xxx : alt_eigen(matrix([1,0,2],[0,1,8],[0,0,q]), 'var=z)],[xxx, subst(q=28,xxx)]);
