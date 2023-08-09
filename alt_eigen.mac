@@ -63,6 +63,7 @@ mygramschmidt(v,p) := block([u : [], proj, dot, uk, doallmxops : true, scalarmat
    proj : lambda([a,b], fullratsubst(p, dot(a,b)*a/dot(a,a))),    
    for vk in v do (         
       uk : ratsimp(vk - lsum(proj(s,vk), s, u)),
+      uk : fullratsubst(p,uk),
       if some(lambda([s], is(s # 0)), uk) then push(uk, u)),  
    apply('sspan, u))$
 
@@ -119,8 +120,7 @@ alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), q, lis
   lk : nullspace(lk),
   for ls in lk do (
      ls : l . ls,       
-     q : xreduce('gcd, flatten(args(ls))),
-     if q # 0 then e : addcol(e, ls / q) else e : addcol(e, ls)),
+     e : addcol(e, ls)),
   e);
 
 /* Find the eigenvectors and eigenvalues of square unblocked matrix; specifically:
