@@ -83,7 +83,7 @@ To apply Gram-Schmidt to the eigenspace, use the optional argument
 		 [z=7774,sspan(matrix([3109],[-290],[-1405]))]]
 ~~~
 
-We end with a $5\times$ example
+We end with a $5\times 5$ example
 
 ~~~
 (%i4)	M : genmatrix(lambda([a,b], if a=b then 1 elseif abs(a-b)=1 then -q else 0),5,5);
