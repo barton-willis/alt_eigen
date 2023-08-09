@@ -3,10 +3,22 @@
  Maxima language code for expressing eigenvectors in terms of eigenvalues.
 
 To use this package, you will need to load it manually. Assuming the file 
-`alt_eigen.mac` is in a path that Maxima can find, load it using the command
- ~~~
-(%i1)	load("alt_eigen.mac")$
+`alt_eigen.mac` is in a path that Maxima can find, load it using the command.
 ~~~
+	load("alt_eigen.mac")$
+~~~
+To find the eigenspaces of $\begin{bmatrix} 1 & 2 \\ 3 & -4 \end{bmatrix}$, use
+the command
+~~~
+(%i3)	M : matrix([1,2],[3,-4]);
+(%o3)	matrix([1,2],[3,-4])
+
+(%i4)	alt_eigen(M,'var=z, 'maxdegree = 1);
+(%o4)	[[z=-5,sspan(matrix([-1],[3]))],
+         [z=2,sspan(matrix([-2],[-1]))]]
+~~~
+
+
 Examples
 ~~~
 (%i19)	M : matrix([1,2],[3,-4]);

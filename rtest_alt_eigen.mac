@@ -92,8 +92,11 @@ alt_eigen(M, var='z,maxdegree=1,'orthogonal=false);
   [z=7774,sspan(matrix([3109],[-290],[-1405]))]]$
 
 alt_eigen(M, var='z,maxdegree=1,'orthogonal=true);
-    [[z=169,sspan(matrix([-8],[5],[0]),matrix([1780],[32],[-1]))],
+    [[z=169,sspan(matrix([-8],[5],[0]),matrix([20],[32],[-89]))],
      [z=7774,sspan(matrix([3109],[-290],[-1405]))]]$
+
+check_eigenspace(M);
+true$
 
 (M : matrix(
 		[(83241*%i+42732)/380320,-(7992*%i-2331)/95080,	(3996*%i+2997)/47540,-(2997*%i-3996)/47540],
@@ -110,9 +113,9 @@ block([gcd : 'subres, algebraic : true], alt_eigen(M, 'var = z, 'orthogonal = fa
 
 block([gcd : 'subres, algebraic : true], alt_eigen(M, 'var = z, 'orthogonal = true));
 [[z=(27*%i-36)/800,sspan(matrix([-740],[-1294],[1061],[967]))],
- [z=(9*%i+3)/40,sspan(matrix([0],[0],[3*%i-4],[4*%i+3]),
- matrix([0],[24*%i+18],[24*%i-7],[-(7*%i)-24]),
- matrix([288*%i-84],[3200-525*%i],[-(2694*%i)-2808],[2694-2808*%i]))]]$	
+  [z=(9*%i+3)/40,sspan(matrix([0],[0],[3*%i-4],[4*%i+3]),
+    matrix([0],[48*%i+36],[24*%i-7],[-7*%i-24]),
+    matrix([27936*%i-8148],[3200-525*%i],[-2694*%i-2808],[2694-2808*%i]))]]$
 
 check_eigenspace(M);
 true$

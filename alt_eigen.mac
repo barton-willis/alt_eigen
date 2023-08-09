@@ -33,14 +33,13 @@ simplifying('assuming,'simp_assuming)$
    but for now, this is OK.*/
 
    simp_sspan([v]) := block([vv : [], normalize],
-   normalize : lambda([q], block([],
+      normalize : lambda([q], block([w, algebraic : true],
        q : first(args(transpose(q))),
-       q : apply('ezgcd,q),
-       q : rest(q),
-       q : funmake('matrix,[q]),
+       w : xreduce('gcd,q),
+       q : funmake('matrix,[ratsimp(q/w)]),
        q : transpose(q))),
    for vk in v do (
-     if some(lambda([q], q#0), vk) then push(normalize(vk), vv)),
+     if some(lambda([q], q # 0), vk) then push(normalize(vk), vv)),
   simpfunmake('sspan, listify(setify(vv))));
 simplifying('sspan,'simp_sspan)$
 
