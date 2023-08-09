@@ -7,7 +7,7 @@ To use this package, you will need to load it manually. Assuming the file
 ~~~
 	load("alt_eigen.mac")$
 ~~~
-To find the eigenspaces of $\begin{bmatrix} 1 & 2 \\ 3 & -4 \end{bmatrix}$, use
+To find the eigenspaces of $\begin{pmatrix} 1 & 2 \\ 3 & -4 \end{pmatrix}$, use
 the command
 ~~~
 (%i3)	M : matrix([1,2],[3,-4]);
