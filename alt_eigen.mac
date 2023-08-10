@@ -37,7 +37,8 @@ simplifying('assuming,'simp_assuming)$
        q : first(args(transpose(q))),
        w : xreduce('gcd,q),
        q : funmake('matrix,[ratsimp(q/w)]),
-       q : transpose(q))),
+       q : transpose(q),
+       second(sort([q,-q])))),
    for vk in v do (
      if some(lambda([q], q # 0), vk) then push(normalize(vk), vv)),
   simpfunmake('sspan, listify(setify(vv))));
@@ -52,6 +53,19 @@ mycolumnspace(M,p,orthogonal) := block([r,c],
   [r,c] : matrix_size(M),
   v : map(lambda([k],col(M,k)), 1 .. c),
   mygramschmidt(v,p,orthogonal));
+
+mynullspace(m,p) := block([nr, nc, acc : [], matrix_element_transpose : false],
+  /* nc and nr are the sizes of the transpose of m */
+   [nc, nr] : matrix_size(m),
+   m : triangularize(addcol(transpose(m), identfor(m))),
+   m : fullratsubst(p, m),
+   for r in m do (
+      r1 : map(lambda([i],equal(inpart(r,i),0)), 1 .. nc),
+      r2 : map(lambda([i],inpart(r,i)), (nc+1) .. 2*nc),
+      ok : block([prederror : false], xreduce("and",r1)),
+      if ok # false then (
+         acc : push(assuming(ok, transpose(r2)),acc))),
+   acc);
    
 /* Apply the Gram-Schmidt process to the list of column vectors with equal size 
    (matrices) in v. The second argument p should be an equation of the form 
@@ -175,6 +189,7 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
  
   p : if not mapatom(p) and op(p) = "*" then args(p) else [p],
   p : sublist(p, lambda([s], not freeof(z,s))), 
+  p : map(gfactor,p),
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
     lk : alt_eigen_h(m,r,pk,z), 
