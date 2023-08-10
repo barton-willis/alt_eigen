@@ -33,7 +33,7 @@ simplifying('assuming,'simp_assuming)$
    but for now, this is OK.*/
 
    simp_sspan([v]) := block([vv : [], normalize],
-      normalize : lambda([q], block([w, algebraic : true],
+      normalize : lambda([q], block([w, algebraic : true, matrix_element_transpose : false],
        q : first(args(transpose(q))),
        w : xreduce('gcd,q),
        q : funmake('matrix,[ratsimp(q/w)]),
@@ -58,16 +58,16 @@ mycolumnspace(M,p,orthogonal) := block([r,c],
    XXX = YYY. Following each projection, substitute (using fullratsubst) p into 
    the result of the projection. 
 
-   The inner product is a.b = conjugate(a).b. This could be generalized to  
-   transpose(conjugate(a)).b). Then the value of matrix_element_transpose would
-   matter. But I don't see an advantage to doing this.
+   The inner product is a.b = transpose(conjugate(a)).b. To do this, we'll locally set 
+   matrix_element_transpose to conjugate.
 
    This function isn't intended to be an user-level function. Accordingly, it doesn't
    check that its arguments are OK. Generally, inappropriate arguments results in
    an unclear error message. */
 
-mygramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, uk, doallmxops : true, scalarmatrixp : true],   
-   dot : lambda([a,b], conjugate(a).b),
+mygramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, uk, 
+  doallmxops : true, scalarmatrixp : true, matrix_element_transpose : 'conjugate],   
+   dot : lambda([a,b], transpose(a).b),
    proj : lambda([a,b], fullratsubst(p, dot(a,b)*a/dot(a,a))),    
    for vk in v do (         
       uk : ratsimp(vk - lsum(proj(s,vk), s, u)),
