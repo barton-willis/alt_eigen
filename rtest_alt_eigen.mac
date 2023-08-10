@@ -41,15 +41,15 @@ errcatch(alt_eigen(matrix([x+3.14,2],[5,7])));
 errcatch(alt_eigen(matrix([1,2],[3,4]), 'maxdegree=%pi));
 []$
 
-/* Basic usage--diagonal matrices */
+/* Basic usage--diagonal & zero matrices */
 alt_eigen(matrix([0]), 'var=z);
-[z=0,[matrix([1])]]$
+[[z=0,sspan(matrix([1]))]]$
 
 alt_eigen(matrix([2]), 'var=z);
 [[z=2,sspan(matrix([1]))]]$
 
 alt_eigen(matrix([0,0],[0,0]), 'var=z);
-[z=0,[matrix([1],[0]),matrix([0],[1])]]$
+[[z=0,sspan(matrix([0],[1]),matrix([1],[0]))]]$
 
 alt_eigen(matrix([2,0],[0,2]), 'var=z);
 [[z=2,sspan(matrix([0],[1]),matrix([1],[0]))]]$

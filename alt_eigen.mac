@@ -168,7 +168,6 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
   ortho : assoc('orthogonal, extra, false),
   if not freeof(u,m) then error("The first argument must not depend on ", u),
 
-  if every(lambda([s], s=0),m) then return([u = 0, makelist(col(identfor(m),k),k,1,c)]),
   p : charpoly(m, z),  
   p : gfactor(p),
   pp : gfactor(p / gcd(p, diff(p,z))),
