@@ -28,9 +28,9 @@ simplifying('assuming,'simp_assuming)$
    package, for now, we'll name it sspan (for simplifying span), not span.
 
    Removes vectors that are explicitly zero, normalizes vectors by removing 
-   the gcd of its members, removes explicitly redundant vectors, and sorts 
-   the vectors. This could do more (optionally do Gram-Schmidt, for example),  
-   but for now, this is OK.*/
+   the gcd of its members, removes explicitly redundant vectors, chooses between
+   the vector and its negation, and sorts the vectors. This could do more 
+   (optionally do Gram-Schmidt, for example), but for now, this is OK.*/
 
    simp_sspan([v]) := block([vv : [], normalize],
       normalize : lambda([q], block([w, algebraic : true, matrix_element_transpose : false],
