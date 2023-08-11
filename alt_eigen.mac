@@ -58,9 +58,12 @@ mycolumnspace(M,p,orthogonal) := block([r,c],
    equation of the form XXX = YYY. Following a triangularization of m^T | I
    (augment the matrix m^T with the appropriately sized identity matrix),
    do a fullratsubst of p of the triangularized matrix. Let's call
-   the result of that A | B. For each row of A that is zero, the transpose
-   of the corresponding row of B is in the nullspace of m. For rows of A that 
-   possibly vansishes, we return an assuming object.
+   the result of that A | B. 
+   
+   The return value is a list of list. For each row of A that is syntatically zero
+   or possibly zero,  include the list member [pred, transpose of the corresponding 
+   row of B]; Say if the row of A is [0,0,a], we include the list member
+   [equal(a,0), matrix([b1],[b2],[b3])].  
 
    This code is algorithmically the same as the nullspace method in the linear 
    algebra package, but the logic is somewhat simplified. The linear algebra package 
