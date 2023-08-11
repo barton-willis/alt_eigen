@@ -191,12 +191,12 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
   if blockmatrixp(m) then error("The first argument must be an unblocked matrix"),
   if not float_free_p(m) then error("The function alt_eigen does not work for matrices with floating point entries"),
 
+  /* Basic check of keyword arguments. */
   if some(lambda([q], mapatom(q) or not (inpart(q,0)="=")),extra) then (
      error("Every optional argument must have the form a=b; found ", extra)),
   
-  if delete(var, delete(maxdegree, map(lhs, extra))) # [] then (
-     error("Keyword arguments must be 'var' or 'maxdegree', found ", extra)),
-  
+  if not subsetp(setify(map('lhs, extra)), set('var,'maxdegree,'orthogonal)) then (
+     error("Keyword arguments must be 'var','maxdegree', or 'orthogonal', found ", extra)),
 
   [r,c] : matrix_size(m),
   if r # c or r = 0 then error("The first argument must be a nonempty square matrix"),
