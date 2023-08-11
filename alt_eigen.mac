@@ -82,7 +82,7 @@ mynullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_transpos
       ok : block([prederror : false], xreduce("and",r1)),
       if ok # false then (
          r2 : map(lambda([i],inpart(r,i)), (nc+1) .. (nr+nc)),
-         acc : push(assuming(ok, transpose(r2)),acc))),
+         acc : push([ok, transpose(r2)],acc))),
    acc);
    
 /* Apply the Gram-Schmidt process to the list of column vectors with equal size 
@@ -147,12 +147,13 @@ bug: (can cause trouble for matrices with floating point entries)
 
 For algebraic numbers, sometimes subres is better than spmod.*/
 
-alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), q, listarith:true, scalarmatrixp:false, 
-    doallmxops : true, ratfac : false],
+alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), 
+    psub,q, listarith:true, scalarmatrixp:false, doallmxops : true, ratfac : false],
   vn : rat(ident(r)),
   p : rat(p), 
   n : hipow(p,z),  
   p : p / ratcoeff(p,z,n),
+  psub : solve(p, z^hipow(p,z)),
   n : n-1,
   l : vn * z^n,
   lk : vn,
@@ -160,8 +161,9 @@ alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), q, lis
      lk : m . lk + ratcoeff(p, z, n) * vn,  
      n : n -1,
      if n > -1 then l : l + z^n * lk), 
-
-  lk : block([ratmx : false], nullspace(lk)),
+  lk : mynullspace(lk,psub),
+  lk : sublist(lk, lambda([q], first(q)=true)),
+  lk : map('second, lk),
   for ls in lk do (
      ls : l . ls,       
      e : addcol(e, ls)),
