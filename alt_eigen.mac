@@ -73,16 +73,16 @@ mycolumnspace(M,p,orthogonal) := block([r,c],
   be--mynullspace isn't intended to be a user-level function.
   
   See https://en.wikipedia.org/wiki/Kernel_(linear_algebra). */
-mynullspace(m,p) := block([nc, acc : [], matrix_element_transpose : false],
+mynullspace(m,p) := block([nc, acc : [], r1, r2, ok, matrix_element_transpose : false],
   /* nc and nr are the sizes of the transpose of m */
    nc : first(matrix_size(m)),
    m : triangularize(addcol(transpose(m), identfor(m))),
    m : fullratsubst(p, m),
    for r in m do (
       r1 : map(lambda([i],equal(inpart(r,i),0)), 1 .. nc),
-      r2 : map(lambda([i],inpart(r,i)), (nc+1) .. 2*nc),
       ok : block([prederror : false], xreduce("and",r1)),
       if ok # false then (
+         r2 : map(lambda([i],inpart(r,i)), (nc+1) .. 2*nc),
          acc : push(assuming(ok, transpose(r2)),acc))),
    acc);
    
