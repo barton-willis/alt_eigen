@@ -60,7 +60,7 @@ mycolumnspace(M,p,orthogonal) := block([r,c],
    do a fullratsubst of p of the triangularized matrix. Let's call
    the result of that A | B. 
    
-   The return value is a list of list. For each row of A that is syntatically zero
+   The return value is a list of lists. For each row of A that is syntatically zero
    or possibly zero,  include the list member [pred, transpose of the corresponding 
    row of B]; Say if the row of A is [0,0,a], we include the list member
    [equal(a,0), matrix([b1],[b2],[b3])].  
