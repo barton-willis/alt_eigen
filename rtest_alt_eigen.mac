@@ -47,6 +47,22 @@ errcatch(alt_eigen(matrix([1,2],[3,4]), 'max=10));
 errcatch(alt_eigen(matrix([1,2],[3,4]), 'maxdegree));
 []$
 
+/* Does sspan work OK? */
+
+sspan(matrix());
+sspan()$
+
+sspan(matrix([0],[0]));
+span()$
+
+sspan(matrix([0],[-1]));
+sspan(matrix([0],[1]))$
+
+sspan(matrix([2],[-4],[8]));
+sspan(matrix([1],[-2],[4]))$
+
+sspan(matrix([2],[-4],[8]), matrix([5*q],[10*q^2],[20*q^3]));
+sspan(matrix([1],[-2],[4]),matrix([1],[2*q],[4*q^2]))$
 
 /* Basic usage--diagonal & zero matrices */
 alt_eigen(matrix([0]), 'var=z);
