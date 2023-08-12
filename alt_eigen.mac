@@ -11,7 +11,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>. */
 
-(load('lrats),load('simplifying), load("integer_sequence"));
+(load('lrats), load('simplifying), load('integer_sequence));
 
 /* True iff the expression e is free of floating point (both binary64 and bigfloat)
    numbers. */
@@ -49,7 +49,7 @@ simplifying('sspan,'simp_sspan)$
    every projection operation in the Gram-Schmidt process, substitute (using 
    fullratsubst) p into the result of the projection. When the third argument
    orthogonal is true, return an orthognal basis. */
-mycolumnspace(M,p,orthogonal) := block([r,c],
+mycolumnspace(M,p,orthogonal) := block([r,c,v],
   [r,c] : matrix_size(M),
   v : map(lambda([k],col(M,k)), 1 .. c),
   mygramschmidt(v,p,orthogonal));
