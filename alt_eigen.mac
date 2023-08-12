@@ -60,7 +60,7 @@ mycolumnspace(M,p,orthogonal) := block([r,c,v],
    do a fullratsubst of p of the triangularized matrix. Let's call
    the result of that A | B. 
    
-   The return value is a list of lists. For each row of A that is syntatically zero
+   The return value is a list of lists. For each row of A that is syntactically zero
    or possibly zero,  include the list member [pred, transpose of the corresponding 
    row of B]; Say if the row of A is [0,0,a], we include the list member
    [equal(a,0), matrix([b1],[b2],[b3])].  
@@ -88,7 +88,7 @@ mynullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_transpos
          acc : push([ok, transpose(r2)],acc))),
    acc);
    
-/* Apply the Gram-Schmidt process to the list of column vectors with equal size 
+/* Apply the Gram-Schmidt process to the list of column vectors of equal size 
    (matrices) in v. The second argument p should be an equation of the form 
    XXX = YYY. Following each projection, substitute (using fullratsubst) p into 
    the result of the projection. 
@@ -97,7 +97,7 @@ mynullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_transpos
    matrix_element_transpose to conjugate.
 
    This function isn't intended to be an user-level function. Accordingly, it doesn't
-   check that its arguments are OK. Generally, inappropriate arguments results in
+   check that its arguments are OK. Generally, inappropriate arguments result in
    an unclear error message. */
 
 mygramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, uk, 
@@ -115,7 +115,7 @@ mygramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, uk,
 /* It's not checked, but the first argument p should be a polynomial in the 
    variable z. When degree(p) <= deg, attempt to find the zeros of p. When
    that is successful, return a list of the solutions; and when solve is
-   not successful, solve p for its highest power and return the one member
+   not successful, solve p for its highest power and return a one member
    list of solutions.*/
 maybe_solve(p,z,deg) := block([n, lt, inflag : true, sol,  programmode : true, globalsolve : false, 
    solveexplicit : true, breakup : false, solvenullwarn : false, solvefactors : true],   
@@ -172,12 +172,13 @@ alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]),
      e : addcol(e, ls)),
   e);
 
-/* Find the eigenvectors and eigenvalues of square unblocked matrix; specifically:
+/* Find the eigenvectors and eigenvalues of a square unblocked matrix; specifically:
 
     alt_eigen(m, 'var = z, 'maxdegree = n, 'orthogonal = bool)
 
 maxdegree -- try to solve factors of the characteristic poly with degree n or less,
-orthogonal -- when true, eigenvectors with geometric multiplicity two or more are sent thru gramm schmidt.
+orthogonal -- when true, eigenvectors with geometric multiplicity two or more are 
+sent through gram schmidt.
 
 Computing the characteristic polynomial is much faster with ratmx : true. 
 
@@ -186,9 +187,7 @@ matrix([1,1/2,%i],[0,1,1/2],[0,1/2,1+%i]). This bug is reported as bug
 #4169 spmod bug when algebraic is true. Additionally, with the default values for
 gcd (spmod) and algebraic (false), we have
    p :  z^2 + (2*%i - 2)*z - 2*%i, gcd(p, diff(p,z)) # z+%i-1.
-So let's set gcd : subres and algebraic : true.
-
-I'm not sure why ratmx gets set to false.*/
+So let's set gcd : subres and algebraic : true. */
 
 alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : [], cnd, u, ortho, ls, inflag : true,
  doallmxops : true, gcd : subres, algebraic : true],  
