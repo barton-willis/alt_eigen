@@ -47,13 +47,16 @@ errcatch(alt_eigen(matrix([1,2],[3,4]), 'max=10));
 errcatch(alt_eigen(matrix([1,2],[3,4]), 'maxdegree));
 []$
 
+errcatch(alt_eigen(matrix([1,b],[b,1]),'var='b,maxdegree=1));
+[]$
+
 /* Does sspan work OK? */
 
 sspan(matrix());
 sspan()$
 
 sspan(matrix([0],[0]));
-span()$
+sspan()$
 
 sspan(matrix([0],[-1]));
 sspan(matrix([0],[1]))$
@@ -184,7 +187,37 @@ alt_eigen(m,'var=z,'maxdegree=2);
 [[z=(150*sqrt(70)+1255)/2,sspan(matrix([2-%i],[3*sqrt(70)+25]))],
 [z=-((150*sqrt(70)-1255)/2),sspan(matrix([2-%i],[25-3*sqrt(70)]))]]$
 
+(remvalue(m),0);
+0$
 
+alt_eigen(matrix([a,-(d-a)^2/(4*c)],[c,	d]),'var=m);
+[[m=(d+a)/2,sspan(matrix([d-a],[-2*c]))]]$
+
+alt_eigen(matrix([1,b],[b,1]),'var=λ);
+assuming(notequal(-4*b^2,0),[[λ=1-b,sspan(matrix([1],[-1]))],
+                              [λ=b+1,sspan(matrix([1],[1]))]])$
+
+(declare(a,complex),alt_eigen(matrix([1,a],[conjugate(a),1]),'var=λ,'maxdegree=1));
+assuming(notequal(-4*a*conjugate(a),0),
+    [[λ^2=2*λ+a*conjugate(a)-1,sspan(matrix([a],[λ-1]))]])$
+
+(remove(a,complex),0);
+0$
+/* Example from https://en.wikipedia.org/wiki/Generalized_eigenvector */
+alt_eigen(matrix([1,0,0,0,0],[3,1,0,0,0],[6,3,2,0,0],[10,6,3,2,0],[15,10,6,3,2]),'var=p);
+[[p=1,sspan(matrix([0],[1],[-3],[3],[-1]))],
+ [p=2,sspan(matrix([0],[0],[0],[0],[1]))]]$
+
+ (assume(notequal(q,2)), assume(notequal(q,1)),0);
+ 0$
+
+ alt_eigen(matrix([2,0,0,0,0],[3,1,0,0,0],[6,3,2,0,0],[10,6,3,2,0],[15,10,6,3,q]),'var=p);
+ [[p=q,sspan(matrix([0],[0],[0],[0],[1]))],
+  [p=1,sspan(matrix([0],[q-1],[3-3*q],[3*q-3],[-1]))],
+  [p=2,sspan(matrix([0],[0],[0],[q-2],[-3]))]]$
+
+(forget(notequal(q,2)), forget(notequal(q,1)),0);
+0$
 
 /* Did the code leak any facts or contexts?*/
 facts();
