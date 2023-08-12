@@ -34,11 +34,9 @@ simplifying('assuming,'simp_assuming)$
    (optionally do Gram-Schmidt, for example), but for now, this is OK.*/
 
    simp_sspan([v]) := block([vv : [], normalize],
-      normalize : lambda([q], block([w, algebraic : true, matrix_element_transpose : false],
-       q : first(args(transpose(q))),
-       w : xreduce('gcd,q),
-       q : funmake('matrix,[ratsimp(q/w)]),
-       q : transpose(q),
+      normalize : lambda([q], block([w, algebraic : true],
+       w : xreduce('gcd,list_matrix_entries(q)),
+       q : if w = 0 then q else ratsimp(q/w),
        second(sort([q,-q])))),
    for vk in v do (
      if some(lambda([q], q # 0), vk) then push(normalize(vk), vv)),
