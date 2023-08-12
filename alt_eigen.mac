@@ -16,7 +16,7 @@
 
 /* True iff the expression e is free of floating point (both binary64 and bigfloat)
    numbers. */
-float_free_p(e) := if mapatom(e) then not (floatnump(e) or bfloatp(e)) else every(lambda([s], float_free_p(s)), args(e));
+float_free_p(e) := if mapatom(e) then not (floatnump(e) or bfloatp(e)) else every('float_free_p, args(e));
 
 simp_assuming(pred,f) := block([prederror : false, bool : is(pred)],
   if bool = true then f 
