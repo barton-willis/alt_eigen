@@ -219,6 +219,12 @@ alt_eigen(matrix([1,0,0,0,0],[3,1,0,0,0],[6,3,2,0,0],[10,6,3,2,0],[15,10,6,3,2])
 (forget(notequal(q,2)), forget(notequal(q,1)),0);
 0$
 
+alt_eigen(matrix([q+5,q,2],[0,1,8],[0,0,q]),'var=z);
+assuming(notequal(25*(q-1)^2*(q+4)^2,0),
+ [[z=q+5,sspan(matrix([1],[0],[0]))],
+  [z=q,sspan(matrix([10*q-2],[-40],[5-5*q]))],
+  [z=1,sspan(matrix([q],[-q-4],[0]))]])$
+
 /* Did the code leak any facts or contexts?*/
 facts();
 []$
