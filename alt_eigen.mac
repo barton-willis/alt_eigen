@@ -48,10 +48,10 @@ simplifying('sspan,'simp_sspan)$
    every projection operation in the Gram-Schmidt process, substitute (using 
    fullratsubst) p into the result of the projection. When the third argument
    orthogonal is true, return an orthognal basis. */
-mycolumnspace(M,p,orthogonal) := block([r,c,v],
+alt_eigen_columnspace(M,p,orthogonal) := block([r,c,v],
   [r,c] : matrix_size(M),
   v : map(lambda([k],col(M,k)), 1 .. c),
-  mygramschmidt(v,p,orthogonal));
+  alt_eigen_gramschmidt(v,p,orthogonal));
 
 /* Return the nullspace of the matrix m. The second argument, p, should be an
    equation of the form XXX = YYY. Following a triangularization of m^T | I
@@ -71,11 +71,11 @@ mycolumnspace(M,p,orthogonal) := block([r,c,v],
    have the feature of reducing the result of triangularization by a kernel (p)
    that vanishes.
 
-  The mynullspace function doesn't check that its arguments are what they need to
-  be--mynullspace isn't intended to be a user-level function.
+  The alt_eigen_nullspace function doesn't check that its arguments are what they need to
+  be--alt_eigen_nullspace isn't intended to be a user-level function.
   
   See https://en.wikipedia.org/wiki/Kernel_(linear_algebra). */
-mynullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_transpose : false],
+alt_eigen_nullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_transpose : false],
    [nc,nr] : matrix_size(m), /* [nr,nc] = size of m^T */
    m : triangularize(addcol(transpose(m), ident(nr))),
    m : fullratsubst(p, m),
@@ -99,7 +99,7 @@ mynullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_transpos
    check that its arguments are OK. Generally, inappropriate arguments result in
    an unclear error message. */
 
-mygramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, uk, 
+alt_eigen_gramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, uk, 
   doallmxops : true, scalarmatrixp : true, matrix_element_transpose : 'conjugate],   
    dot : lambda([a,b], transpose(a).b),
    proj : lambda([a,b], fullratsubst(p, dot(a,b)*a/dot(a,a))),    
@@ -164,7 +164,7 @@ alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]),
      lk : m . lk + ratcoeff(p, z, n) * vn,  
      n : n -1,
      if n > -1 then l : l + z^n * lk), 
-  lk : mynullspace(lk,psub),
+  lk : alt_eigen_nullspace(lk,psub),
   lk : sublist(lk, lambda([q], first(q)=true)),
   lk : map('second, lk),
   for ls in lk do (
@@ -224,9 +224,9 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
     lk : alt_eigen_h(m,r,pk,z),
     lk : fullratsubst(first(maybe_solve(pk,z,1)), lk), 
     pk : maybe_solve(pk, z, hp),
-    lk : mycolumnspace(lk, pk, false),
+    lk : alt_eigen_columnspace(lk, pk, false),
     for pkl in pk do (
        ls : subst(pkl, lk),
-       if ortho then ls : mygramschmidt(ls, pkl,true),
+       if ortho then ls :alt_eigen_gramschmidt(ls, pkl,true),
        es : cons([pkl, ls], es))),
   assuming(cnd, subst(z=u,es)));
