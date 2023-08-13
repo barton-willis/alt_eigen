@@ -150,7 +150,8 @@ bug: (can cause trouble for matrices with floating point entries)
 For algebraic numbers, sometimes subres is better than spmod.*/
 
 alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), 
-    psub,q, listarith:true, scalarmatrixp:false, doallmxops : true, ratfac : false],
+    psub, q, listarith:true, scalarmatrixp:false, doallmxops : true, 
+    prederror : false, ratfac : false],
   vn : rat(ident(r)),
   p : rat(p), 
   n : hipow(p,z),  
@@ -167,7 +168,7 @@ alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]),
   lk : sublist(lk, lambda([q], first(q)=true)),
   lk : map('second, lk),
   for ls in lk do (
-     ls : l . ls,       
+     ls : l . ls,     
      e : addcol(e, ls)),
   e);
 
@@ -188,8 +189,8 @@ gcd (spmod) and algebraic (false), we have
    p :  z^2 + (2*%i - 2)*z - 2*%i, gcd(p, diff(p,z)) # z+%i-1.
 So let's set gcd : subres and algebraic : true. */
 
-alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : [], cnd, u, ortho, ls, inflag : true,
- doallmxops : true, gcd : subres, algebraic : true],  
+alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : [], 
+  cnd, u, ortho, ls, inflag : true, doallmxops : true, gcd : subres, algebraic : true],  
   if not matrixp(m) then error("The first argument must be a matrix"),  
   if blockmatrixp(m) then error("The first argument must be an unblocked matrix"),
   if not float_free_p(m) then error("The function alt_eigen does not work for matrices with floating point entries"),
@@ -214,13 +215,13 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
   p : gfactor(p),
   pp : gfactor(p / gcd(p, diff(p,z))),
   cnd : gfactor(resultant(pp,diff(pp,z),z)),
- 
+  cnd : apply("and",[notequal(cnd,0)]),
   p : if not mapatom(p) and op(p) = "*" then args(p) else [p],
   p : sublist(p, lambda([s], not freeof(z,s))), 
   p : map(gfactor,p),
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
-    lk : alt_eigen_h(m,r,pk,z), 
+    lk : alt_eigen_h(m,r,pk,z),
     lk : fullratsubst(first(maybe_solve(pk,z,1)), lk), 
     pk : maybe_solve(pk, z, hp),
     lk : mycolumnspace(lk, pk, false),
@@ -228,4 +229,4 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
        ls : subst(pkl, lk),
        if ortho then ls : mygramschmidt(ls, pkl,true),
        es : cons([pkl, ls], es))),
-  assuming(notequal(cnd,0), subst(z=u,es)));
+  assuming(cnd, subst(z=u,es)));
