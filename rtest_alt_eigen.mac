@@ -92,7 +92,7 @@ alt_eigen(matrix([1,2,3],[4,5,6],[0,0,2*sqrt(3)+3]),'var=z);
 
 /* Does the assuming function work OK? */
 block([xxx : alt_eigen(matrix([1,0,2],[0,1,8],[0,0,q]), 'var=z)],[xxx, subst(q=28,xxx)]);
-[assuming(notequal((q-1)^2,0),[[z=q,sspan(matrix([-2],[-8],[1-q]))],
+[assuming(notequal((q-1),0),[[z=q,sspan(matrix([-2],[-8],[1-q]))],
                                [z=1,sspan(matrix([0],[1],[0]),
                                           matrix([1],[0],[0]))]]),
 [[z=28,sspan(matrix([-2],[-8],[-27]))],
@@ -172,7 +172,7 @@ true$
 0$
 
 alt_eigen(m,'var=z);
-assuming(notequal(-m1^2*m2^2*(m2-m1)^2*m3^2*(m3-m1)^2*(m3-m2)^2*m4^2*(m4-m1)^2*(m4-m2)^2*(m4-m3)^2,0),
+assuming(notequal(m1*m2*(m2-m1)*m3*(m3-m1)*(m3-m2)*m4*(m4-m1)*(m4-m2)*(m4-m3),0),
 [[z=m4,sspan(matrix([0],[0],[0],[-1],[0]))],
  [z=m3,sspan(matrix([0],[0],[1],[0],[0]))],
  [z=m2,sspan(matrix([0],[-1],	[0],[0],[0]))],
@@ -194,11 +194,11 @@ alt_eigen(matrix([a,-(d-a)^2/(4*c)],[c,	d]),'var=m);
 [[m=(d+a)/2,sspan(matrix([d-a],[-2*c]))]]$
 
 alt_eigen(matrix([1,b],[b,1]),'var=λ);
-assuming(notequal(-4*b^2,0),[[λ=1-b,sspan(matrix([1],[-1]))],
+assuming(notequal(b,0),[[λ=1-b,sspan(matrix([1],[-1]))],
                               [λ=b+1,sspan(matrix([1],[1]))]])$
 
 (declare(a,complex),alt_eigen(matrix([1,a],[conjugate(a),1]),'var=λ,'maxdegree=1));
-assuming(notequal(-4*a*conjugate(a),0),
+assuming(notequal(a*conjugate(a),0),
     [[λ^2=2*λ+a*conjugate(a)-1,sspan(matrix([a],[λ-1]))]])$
 
 (remove(a,complex),0);
@@ -220,7 +220,7 @@ alt_eigen(matrix([1,0,0,0,0],[3,1,0,0,0],[6,3,2,0,0],[10,6,3,2,0],[15,10,6,3,2])
 0$
 
 alt_eigen(matrix([q+5,q,2],[0,1,8],[0,0,q]),'var=z);
-assuming(notequal(25*(q-1)^2*(q+4)^2,0),
+assuming(notequal((q-1)*(q+4),0),
  [[z=q+5,sspan(matrix([1],[0],[0]))],
   [z=q,sspan(matrix([10*q-2],[-40],[5-5*q]))],
   [z=1,sspan(matrix([q],[-q-4],[0]))]])$

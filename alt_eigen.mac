@@ -172,6 +172,61 @@ alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]),
      e : addcol(e, ls)),
   e);
 
+/* Return true iff the expression e has the form a^b */
+mexptp(e) := block([inflag : true],
+  not mapatom(e) and inpart(e,0) = "^");
+
+/* Return true iff the expression e has the form a*b */
+mtimesp(e) := block([inflag : true],
+  not mapatom(e) and inpart(e,0) = "*");
+
+/* Return a simplified expression that is semantically the same as notequal(e,0).
+   We could define a simplifying notequal, but let's stick with this. We do
+
+   a) gfactor e and replace every factor q that satisfies notequal(q,0)=true by 1.
+
+   b) gfactor e again and replace every factor of the form X^n, where is is a 
+      positive number by X. */
+simp_notequal(e,z) := block([inflag : true, fn],
+  fn : lambda([q], if mexptp(q) and numberp(second(q) and second(q) > 0)
+             then first(q) else q),
+  /* Replace nonzero factors of e by one.*/
+  e : gfactor(e),
+  if mtimesp(e) then (
+     e : map(lambda([q], if is(notequal(q,0))=true then 1 else q),e)),
+ 
+  /* Replace factors of e of the form X^n where n is a positive number by X */
+  e : gfactor(e),
+  if mtimesp(e) then (
+      e : map(fn,e)),
+  /* Convert X^n, where n is a positive number by X */
+  if mexptp(e) then (
+     e : fn(e)),
+   notequal(e,0));
+
+/* The first argument is a list of the factors of a polynoimal and the
+   second arument is the polynomial variable. Require that 
+
+     a) each factor be square free
+     b) the set of factors have pairwise non vanishing resultants
+   
+   Return either true or a notequal expression.
+
+   Example: The condition that the polynomial z -> z^2-2*z-a*conjugate(a)+1 be square 
+   free is a*conjugate(a)=0. So return notequal(a*conjugate(a),0). */
+alt_eigen_cnd(p,z) := block([cnd,n],
+   cnd: map(lambda([q],block([],
+         q : gfactor(q/gcd(q, diff(q,z))),
+         gfactor(resultant(q,diff(q,z),z)))), p),
+
+   n : length(p),
+   for k : 1 thru n-1 do (
+      for l : k+1 thru n do (
+         push(resultant(inpart(p,k),inpart(p,l),z), cnd))),
+   cnd : delete(0,cnd),
+   cnd : gfactor(xreduce("*",cnd)),
+   simp_notequal(cnd,z));
+
 /* Find the eigenvectors and eigenvalues of a square unblocked matrix; specifically:
 
     alt_eigen(m, 'var = z, 'maxdegree = n, 'orthogonal = bool)
@@ -189,8 +244,8 @@ gcd (spmod) and algebraic (false), we have
    p :  z^2 + (2*%i - 2)*z - 2*%i, gcd(p, diff(p,z)) # z+%i-1.
 So let's set gcd : subres and algebraic : true. */
 
-alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : [], 
-  cnd, u, ortho, ls, inflag : true, doallmxops : true, gcd : subres, algebraic : true],  
+alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, lk, ord, hp, es : [], 
+  u, ortho, ls, inflag : true, doallmxops : true, gcd : subres, algebraic : true],  
   if not matrixp(m) then error("The first argument must be a matrix"),  
   if blockmatrixp(m) then error("The first argument must be an unblocked matrix"),
   if not float_free_p(m) then error("The function alt_eigen does not work for matrices with floating point entries"),
@@ -213,12 +268,18 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, pp, lk, ord, hp, es : 
 
   p : block([ratmx : true], charpoly(matrixmap('rat, m), z)),  
   p : gfactor(p),
-  pp : gfactor(p / gcd(p, diff(p,z))),
-  cnd : gfactor(resultant(pp,diff(pp,z),z)),
-  cnd : apply("and",[notequal(cnd,0)]),
   p : if not mapatom(p) and op(p) = "*" then args(p) else [p],
   p : sublist(p, lambda([s], not freeof(z,s))), 
   p : map(gfactor,p),
+  cnd : alt_eigen_cnd(p,z),
+  /*
+  cnd : outermap(lambda([a,b], resultant(a,b,z)), p, p),
+  cnd : xreduce('append, cnd),
+  cnd : delete(0,cnd),
+  cnd : listify(setify(cnd)),
+  cnd : factor(xreduce("*",cnd)),
+  cnd : simp_notequal(cnd,z), */
+
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
     lk : alt_eigen_h(m,r,pk,z),
