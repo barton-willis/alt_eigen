@@ -50,6 +50,12 @@ errcatch(alt_eigen(matrix([1,2],[3,4]), 'maxdegree));
 errcatch(alt_eigen(matrix([1,b],[b,1]),'var='b,maxdegree=1));
 []$
 
+errcatch(alt_eigen(matrix([92,-3,-18],[198, 41,-198], [-126,1, a]),'var=a+b));
+[]$
+
+errcatch(alt_eigen(matrix([1,2,3],[4,5,6])));
+[]$
+
 /* Does sspan work OK? */
 
 sspan(matrix());

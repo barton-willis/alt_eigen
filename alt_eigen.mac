@@ -263,6 +263,10 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, lk, ord, hp, es : [],
   hp : assoc('maxdegree, extra, 1), /* hp = highest power polynomial that will be solved */
   if not integerp(hp) then error("The value of 'maxdegree' must be an integer"),
   u : assoc('var, extra, z),
+  
+  if not mapatom(u) then (
+    error("Eigenvalue identifier must be a mapatom; found ", u)),
+
   ortho : assoc('orthogonal, extra, false),
   if not freeof(u,m) then error("The first argument must not depend on ", u),
 
