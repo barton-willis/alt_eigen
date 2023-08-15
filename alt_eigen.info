@@ -21,7 +21,7 @@ File: C:\Users\willisb\Documents\GitHub\alt_eigen\alt_eigen\alt_eigen.info,  Nod
      expressions, sometimes ‘alt_eigen’ yeilds a useful result when the
      standard ‘eigen’ code fails.
 
-     The first argument to ‘alt_eigen’ is requried, and it must be a
+     The first argument to ‘alt_eigen’ is required, and it must be a
      nonempty, square, and unblocked matrix.  The entries of the matrix
      should be polynomials with rational coefficients, including complex
      rational numbers.  Entries containing floating point numbers,
@@ -109,7 +109,7 @@ File: C:\Users\willisb\Documents\GitHub\alt_eigen\alt_eigen\alt_eigen.info,  Nod
           (%i4)	subst(q=200,xxx);
           (%o4)	unknown
      To find the eigenvalues and eigenvectors for this case, we must
-     subtsitute q=200 into the matrix before calling ‘alt_eigen’.
+     substitute q=200 into the matrix before calling ‘alt_eigen’.
 
      Substituting q=1 into this ‘assuming’ object gives output as if the
      substitution was made before calling ‘alt_eigen’; we have
@@ -139,7 +139,7 @@ File: C:\Users\willisb\Documents\GitHub\alt_eigen\alt_eigen\alt_eigen.info,  Nod
           explicitly zero are removed, vectors are normalized by
           removing the gcd of its members, redundant members are
           removed, and the vectors are sorted.  Additionally, for each
-          vector x, there is a decison between -x and x$
+          vector x, there is a decision between including -x or x$
 
         • Possibly, the ‘sspan’ could migrate to the linear algebra
           package.

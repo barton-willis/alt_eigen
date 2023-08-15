@@ -43,7 +43,7 @@ When the eigenvalues have no simple representation or
 are lengthy expressions, sometimes <code class="code">alt_eigen</code> yeilds a useful 
 result when the standard <code class="code">eigen</code> code fails.
 </p>
-<p>The first argument to <code class="code">alt_eigen</code> is requried, and it must 
+<p>The first argument to <code class="code">alt_eigen</code> is required, and it must 
 be a nonempty, square, and unblocked matrix. The entries of the matrix should 
 be polynomials with rational coefficients, including complex rational numbers. 
 Entries containing floating point numbers, either IEEE binary64 or bigfloats, 
@@ -144,7 +144,7 @@ and it surrounds the output using an <code class="code">assuming</code> object:
 <pre class="example-preformatted">(%i4)	subst(q=200,xxx);
 (%o4)	unknown
 </pre></div>
-<p>To find the eigenvalues and eigenvectors for this case, we must subtsitute
+<p>To find the eigenvalues and eigenvectors for this case, we must substitute 
 <em class="math">q=200</em> into the matrix before calling <code class="code">alt_eigen</code>.
 </p>
 <p>Substituting <em class="math">q=1</em> into this <code class="code">assuming</code> object gives output as if
@@ -179,7 +179,7 @@ the substitution was made before calling <code class="code">alt_eigen</code>; we
     operator. In a <code class="code">sspan</code> object, vectors that are explicitly zero are 
     removed, vectors are normalized by removing the gcd of its members, 
     redundant members are removed, and the vectors are sorted. Additionally,
-    for each vector <em class="math">x</em>, there is a decison between <em class="math">-x</em> and
+    for each vector <em class="math">x</em>, there is a  decision between including <em class="math">-x</em> or
     <em class="math">x</em>$
 
 </li><li>Possibly, the <code class="code">sspan</code> could migrate to the linear algebra package.
