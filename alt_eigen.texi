@@ -17,7 +17,7 @@ When the eigenvalues have no simple representation or
 are lengthy expressions, sometimes @code{alt_eigen} yeilds a useful 
 result when the standard @code{eigen} code fails.
 
-The first argument to @code{alt_eigen} is requried, and it must 
+The first argument to @code{alt_eigen} is required, and it must 
 be a nonempty, square, and unblocked matrix. The entries of the matrix should 
 be polynomials with rational coefficients, including complex rational numbers. 
 Entries containing floating point numbers, either IEEE binary64 or bigfloats, 
@@ -118,7 +118,7 @@ Substituting @math{q=200} into this @code{assuming} object yeilds @code{unknown}
 (%i4)	subst(q=200,xxx);
 (%o4)	unknown
 @end example
-To find the eigenvalues and eigenvectors for this case, we must subtsitute
+To find the eigenvalues and eigenvectors for this case, we must substitute 
 @math{q=200} into the matrix before calling @code{alt_eigen}.
 
 Substituting @math{q=1} into this @code{assuming} object gives output as if
@@ -153,7 +153,7 @@ Our final example is well-known banded matrix:
     operator. In a @code{sspan} object, vectors that are explicitly zero are 
     removed, vectors are normalized by removing the gcd of its members, 
     redundant members are removed, and the vectors are sorted. Additionally,
-    for each vector @math{x}, there is a decison between @math{-x} and
+    for each vector @math{x}, there is a  decision between including @math{-x} or
     @math{x}$
 
 @item Possibly, the @code{sspan} could migrate to the linear algebra package.
