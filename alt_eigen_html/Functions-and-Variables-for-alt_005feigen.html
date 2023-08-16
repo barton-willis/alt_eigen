@@ -28,6 +28,7 @@ ul.mark-bullet {list-style-type: disc}
 
 <body lang="en">
 
+
 <h1 class="title">The alt_eigen package</h1>
 
 <div class="section-level-extent" id="Functions-and-Variables-for-alt_005feigen">
@@ -40,14 +41,17 @@ ul.mark-bullet {list-style-type: disc}
 <p>The function <code class="code">alt_eigen</code> expresses the eigenvectors of
 a nonempty, square, unblocked, matrix in terms of its eigenvalues. 
 When the eigenvalues have no simple representation or 
-are lengthy expressions, sometimes <code class="code">alt_eigen</code> yeilds a useful 
+are lengthy expressions, sometimes <code class="code">alt_eigen</code> yeilds an useful 
 result when the standard <code class="code">eigen</code> code fails.
 </p>
 <p>The first argument to <code class="code">alt_eigen</code> is required, and it must 
-be a nonempty, square, and unblocked matrix. The entries of the matrix should 
+be a nonempty, square, and unblocked matrix. The entries of the matrix can  
 be polynomials with rational coefficients, including complex rational numbers. 
 Entries containing floating point numbers, either IEEE binary64 or bigfloats, 
-are not allowed and will throw an error.
+are not allowed and will throw an error. Except for the condition of
+no floating point numbers, the matrix entries can be arbitray expressions, but for 
+such matrices the results might not be correct due to the inability to always 
+detect vanishing expressions.
 </p>
 <p>The remaining arguments to <code class="code">alt_eigen</code> are optional keyword arguments.
 The keywords are <code class="code">var</code>, <code class="code">maxdegree</code>, and <code class="code">orthogonal</code>. The
@@ -56,15 +60,15 @@ Specfically
 </p><ul class="itemize mark-bullet">
 <li><code class="code">var</code> is the eigenvalue name. If the eigenvalue name is <code class="code">z</code>,
 use <code class="code">'var = z</code>. If the keyword <code class="code">var</code> is missing, Maxima will use a 
-<code class="code">gensym</code> to name the eigenvalue.
+<code class="code">gensym</code> to name the eigenvalue. The eigenvalue name must be a mapatom.
 
 </li><li><code class="code">maxdegree</code> is the maximum polynomial degree of a factor of the
  characteristic polynomial that Maxima will attempt to solve. The default
 for <code class="code">maxdegree</code> is one.
 
-</li><li><code class="code">orthogonal</code> should be a boolean. When <code class="code">orthogonal</code> is true,
-<code class="code">alt_eigen</code> will apply the Gram-Schmidt process to a basis for the 
-eigenspace. The default value for this keyword is false.
+</li><li><code class="code">orthogonal</code> When <code class="code">orthogonal</code> is true, <code class="code">alt_eigen</code> will 
+apply the Gram-Schmidt process to a basis for the eigenspace. 
+The default value for <code class="code">orthogonal</code> is false.
 
 </li></ul>
 
@@ -94,9 +98,10 @@ that Maxima can find, load the package using the command
 
 (%o2) [[z^2=5*z+2,sspan(matrix([2],[z-1]))]]
 </pre></div>
-<p>This says that for each solution to <em class="math">z^2=5z+2</em>, is an eigenvector 
-of <code class="code">matrix([2],[z-1])</code>, and the corresponding eigenspace is 
-the span of this eigenvector.
+<p>This says that for each solution to <em class="math">z^2=5z+2</em>, is an eigenvector,
+<code class="code">matrix([1,2],[3,4])</code> is an eigenvector, and that the corresponding
+eigenspace is <code class="code">sspan(matrix([2],[z-1])</code>, where <code class="code">sspan</code> means the
+vector span.
 </p>
 <p>To  explicitly solve this eigenvalue condition, set the key word <code class="code">maxdegree</code> to
 two:
@@ -130,7 +135,7 @@ exactly one matrix entry that is a polynomial in the variable <em class="math">q
 <div class="example">
 <pre class="example-preformatted">(%i2)	m : matrix([92,-3,-18],[198,41,-198],[-126,21,q])$
 </pre></div>
-<p>Maxima determines that <em class="math">((q-200)(q^2-118 q-4079)=0</em> is a specical case
+<p>Maxima determines that <em class="math">(q-200)(q^2-118 q-4079=0</em> is a specical case
 and it surrounds the output using an <code class="code">assuming</code> object:
 </p><div class="example">
 <pre class="example-preformatted">(%i3) xxx  : alt_eigen(m,'var=z);
@@ -184,16 +189,10 @@ the substitution was made before calling <code class="code">alt_eigen</code>; we
 
 </li><li>Possibly, the <code class="code">sspan</code> could migrate to the linear algebra package.
 
-</li><li>The entries of the matrix should be polynomials with rational coefficients, 
-including complex rational numbers, but this condition is <i class="i">not</i> checked. But entries 
-with floating point numbers, either IEEE binary64 or big floats, cause <code class="code">alt_eigen</code>
-to throw an error.
-
 </li><li>The matrix must not depend on the eigenvalue identifier; if it does, 
 <code class="code">alt_eigen</code> will throw an error.
 
-</li><li>The members of a <code class="code">sspan</code> operator should be linearly independent. When 
-every matrix entry is a rational number, either real or complex, the members of
+</li><li>When every matrix entry is a rational number, either real or complex, the members of
 a <code class="code">span</code> operator must be linearly independent; if not, it&rsquo;s a bug. When 
 a matrix entry is non-polynomial, the members of a <code class="code">span</code> operator are not
 guarenteed to be linearly independent.

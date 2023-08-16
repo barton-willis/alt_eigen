@@ -16,14 +16,17 @@
 The function @code{alt_eigen} expresses the eigenvectors of
 a nonempty, square, unblocked, matrix in terms of its eigenvalues. 
 When the eigenvalues have no simple representation or 
-are lengthy expressions, sometimes @code{alt_eigen} yeilds a useful 
+are lengthy expressions, sometimes @code{alt_eigen} yeilds an useful 
 result when the standard @code{eigen} code fails.
 
 The first argument to @code{alt_eigen} is required, and it must 
-be a nonempty, square, and unblocked matrix. The entries of the matrix should 
+be a nonempty, square, and unblocked matrix. The entries of the matrix can  
 be polynomials with rational coefficients, including complex rational numbers. 
 Entries containing floating point numbers, either IEEE binary64 or bigfloats, 
-are not allowed and will throw an error.
+are not allowed and will throw an error. Except for the condition of
+no floating point numbers, the matrix entries can be arbitray expressions, but for 
+such matrices the results might not be correct due to the inability to always 
+detect vanishing expressions.
 
 The remaining arguments to @code{alt_eigen} are optional keyword arguments.
 The keywords are @code{var}, @code{maxdegree}, and @code{orthogonal}. The
@@ -32,15 +35,15 @@ Specfically
 @itemize @bullet
 @item @code{var} is the eigenvalue name. If the eigenvalue name is @code{z},
 use @code{'var = z}. If the keyword @code{var} is missing, Maxima will use a 
-@code{gensym} to name the eigenvalue.
+@code{gensym} to name the eigenvalue. The eigenvalue name must be a mapatom.
 
 @item @code{maxdegree} is the maximum polynomial degree of a factor of the
  characteristic polynomial that Maxima will attempt to solve. The default
 for @code{maxdegree} is one.
 
-@item @code{orthogonal} should be a boolean. When @code{orthogonal} is true,
-@code{alt_eigen} will apply the Gram-Schmidt process to a basis for the 
-eigenspace. The default value for this keyword is false.
+@item @code{orthogonal} When @code{orthogonal} is true, @code{alt_eigen} will 
+apply the Gram-Schmidt process to a basis for the eigenspace. 
+The default value for @code{orthogonal} is false.
 
 @end itemize
 
@@ -70,9 +73,10 @@ After loading @code{alt_eigen}, we can find the eigenvalues and eigenvectors of
 
 (%o2) [[z^2=5*z+2,sspan(matrix([2],[z-1]))]]
 @end example
-This says that for each solution to @math{z^2=5z+2}, is an eigenvector 
-of @code{matrix([2],[z-1])}, and the corresponding eigenspace is 
-the span of this eigenvector.
+This says that for each solution to @math{z^2=5z+2}, is an eigenvector,
+@code{matrix([1,2],[3,4])} is an eigenvector, and that the corresponding
+eigenspace is @code{sspan(matrix([2],[z-1])}, where @code{sspan} means the
+vector span.
 
 To  explicitly solve this eigenvalue condition, set the key word @code{maxdegree} to
 two:
@@ -106,7 +110,7 @@ exactly one matrix entry that is a polynomial in the variable @math{q}:
 @example
 (%i2)	m : matrix([92,-3,-18],[198,41,-198],[-126,21,q])$
 @end example
-Maxima determines that @math{((q-200)(q^2-118 q-4079)=0} is a specical case
+Maxima determines that @math{(q-200)(q^2-118 q-4079=0} is a specical case
 and it surrounds the output using an @code{assuming} object:
 @example 
 (%i3) xxx  : alt_eigen(m,'var=z);
@@ -160,16 +164,10 @@ Our final example is well-known banded matrix:
 
 @item Possibly, the @code{sspan} could migrate to the linear algebra package.
 
-@item The entries of the matrix should be polynomials with rational coefficients, 
-including complex rational numbers, but this condition is @i{not} checked. But entries 
-with floating point numbers, either IEEE binary64 or big floats, cause @code{alt_eigen}
-to throw an error.
-
 @item The matrix must not depend on the eigenvalue identifier; if it does, 
 @code{alt_eigen} will throw an error.
 
-@item The members of a @code{sspan} operator should be linearly independent. When 
-every matrix entry is a rational number, either real or complex, the members of
+@item  When every matrix entry is a rational number, either real or complex, the members of
 a @code{span} operator must be linearly independent; if not, it's a bug. When 
 a matrix entry is non-polynomial, the members of a @code{span} operator are not
 guarenteed to be linearly independent.
