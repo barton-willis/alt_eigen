@@ -160,7 +160,7 @@ Our final example is well-known banded matrix:
     removed, vectors are normalized by removing the gcd of its members, 
     redundant members are removed, and the vectors are sorted. Additionally,
     for each vector @math{x}, there is a  decision between including @math{-x} or
-    @math{x}$
+    @math{x}.
 
 @item Possibly, the @code{sspan} could migrate to the linear algebra package.
 

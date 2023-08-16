@@ -144,7 +144,7 @@ File: C:\Users\willisb\Documents\GitHub\alt_eigen\alt_eigen\alt_eigen.info,  Nod
           explicitly zero are removed, vectors are normalized by
           removing the gcd of its members, redundant members are
           removed, and the vectors are sorted.  Additionally, for each
-          vector x, there is a decision between including -x or x$
+          vector x, there is a decision between including -x or x.
 
         • Possibly, the ‘sspan’ could migrate to the linear algebra
           package.
