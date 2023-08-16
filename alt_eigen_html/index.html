@@ -3,16 +3,15 @@
 <!-- Created by GNU Texinfo 7.0.3, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Functions and Variables for alt_eigen (The alt_eigen package)</title>
+<title>The alt_eigen package</title>
 
-<meta name="description" content="Functions and Variables for alt_eigen (The alt_eigen package)">
-<meta name="keywords" content="Functions and Variables for alt_eigen (The alt_eigen package)">
+<meta name="description" content="The alt_eigen package">
+<meta name="keywords" content="The alt_eigen package">
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<link href="#Functions-and-Variables-for-alt_005feigen" rel="start" title="Functions and Variables for alt_eigen">
 <style type="text/css">
 <!--
 a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
@@ -32,66 +31,54 @@ ul.mark-bullet {list-style-type: disc}
 <h1 class="title">The alt_eigen package</h1>
 
 
-<p>The function <code class="code">alt_eigen</code> expresses the eigenvectors of a matrix as a
-polynomial in its eigenvalues. When the eigenvalues have no simple representation or 
-are lengthy expressions, sometimes <code class="code">alt_eigen</code> gives a useful 
-result when the standard <code class="code">eigen</code> code fails.
-</p>
-<p>Barton Willis wrote and maintains the <code class="code">alt_eigen</code> package and its user 
-documentation.
-</p>
-<div class="section-level-extent" id="Functions-and-Variables-for-alt_005feigen">
-<h3 class="section" id="Functions-and-Variables-for-alt_005feigen-1">1 Functions and Variables for alt_eigen</h3>
-
 <a class="index-entry-id" id="index-alt_005feigen_0028m_002c-_005bextra_005d_0029"></a>
 <dl class="first-deffn">
 <dt class="deffn" id="index-alt_005feigen_0028m_002c"><span class="category-def">Operator: </span><span><strong class="def-name">alt_eigen(m,</strong> <var class="def-var-arguments">[extra])</var><a class="copiable-link" href='#index-alt_005feigen_0028m_002c'> &para;</a></span></dt>
 <dd>
 <p>The function <code class="code">alt_eigen</code> expresses the eigenvectors of a matrix in terms of 
-its eigenvalues. 
+its eigenvalues. When the eigenvalues have no simple representation or 
+are lengthy expressions, sometimes <code class="code">alt_eigen</code> gives an useful 
+result when the standard <code class="code">eigen</code> code fails.
 </p>
 <p>The first argument to <code class="code">alt_eigen</code> is required, and it must 
 be a nonempty, square, and unblocked matrix. The entries of the matrix can  
 be polynomials with rational coefficients, including complex rational numbers. 
 Entries containing floating point numbers, either IEEE binary64 or bigfloats, 
 are not allowed and will throw an error. Actually, except for the condition of
-no floating point numbers and blocked matrices, matrix entries can be arbitrary
-Maxima expressions, but for such matrices, the results might be incorrect due to 
-the inability to detect vanishing expressions.
+no floating point numbers, matrix entries can be arbitray expressions, but for 
+such matrices the results might be incorrect due to the inability to  
+detect vanishing expressions.
 </p>
 <p>The remaining arguments to <code class="code">alt_eigen</code> are optional keyword arguments.
-The three allowed keywords are <code class="code">var</code>, <code class="code">maxdegree</code>, and <code class="code">orthogonal</code>. 
-The keywords can be in any order.
-Specifically
+The keywords are <code class="code">var</code>, <code class="code">maxdegree</code>, and <code class="code">orthogonal</code>. The
+keywords can be in any order.
+Specfically
 </p><ul class="itemize mark-bullet">
-<li><code class="code">var</code> The keyword <code class="code">var</code> names the eigenvalue. For example, if the 
-eigenvalue name is <code class="code">z</code>, use the keyword argument <code class="code">'var = z</code>. If the keyword 
-<code class="code">var</code> is missing, Maxima will use a <code class="code">gensym</code> to name the eigenvalue. The 
-eigenvalue name must be a mapatom.
+<li><code class="code">var</code> is the eigenvalue name. If the eigenvalue name is <code class="code">z</code>,
+use <code class="code">'var = z</code>. If the keyword <code class="code">var</code> is missing, Maxima will use a 
+<code class="code">gensym</code> to name the eigenvalue. The eigenvalue name must be a mapatom.
 
-</li><li><code class="code">maxdegree</code> The keyword <code class="code">maxdegree</code> gives the maximum polynomial 
- degree of a factor of the characteristic polynomial that Maxima will attempt to 
- solve. For example, to find the zeros of all factors with degree two or less,
- use the keyword argument <code class="code">'maxdegree = 2</code>. The value of <code class="code">maxdegree</code> must 
- be an explicit integer. The default for <code class="code">maxdegree</code> is one.
+</li><li><code class="code">maxdegree</code> is the maximum polynomial degree of a factor of the
+ characteristic polynomial that Maxima will attempt to solve. The default
+for <code class="code">maxdegree</code> is one.
 
 </li><li><code class="code">orthogonal</code> When <code class="code">orthogonal</code> is true, <code class="code">alt_eigen</code> will 
-apply the Gram-Schmidt process to each spanning set and return an orthogonal basis; 
-for all other values of <code class="code">orthogonal</code>, the Gram-Schmidt process isn&rsquo;t applied. 
-The default value for <code class="code">orthogonal</code> is false. Thus to use the Gram-Schmidt 
-process, use the keyword argument <code class="code">'orthogonal = true</code>.
+apply the Gram-Schmidt process to a basis for the eigenspace; for all other
+values of <code class="code">orthogonal</code>, the Gram-Schmidt process isn&rsquo;t applied. The 
+default value for <code class="code">orthogonal</code> is false.
+
 </li></ul>
 
 <p>The output of <code class="code">alt_eigen</code> is a list of lists, optionally surrounded by 
 an <code class="code">assuming</code> object. The first argument of <code class="code">assuming</code> is a predicate
-that is required for the correctness of the eigenvalues and eigenspaces. 
+that is required for the correctness of the eigenvales and eigenvectors. 
 </p>
 <p>Each member of the list of lists has the form <code class="code">[eigenvalue equation, sspan object]</code>. 
 Each eigenvalue equation is solved for the highest power of the eigenvalue. The members 
-of the <code class="code">sspan</code> object form <i class="i">spanning set</i> for the eigenspace corresponding
+of the <code class="code">sspan</code> object form <i class="i">spanning set</i> for the eigenspace coresponding
 to the eigenvalue equation. This spanning set is linearly independent (that is a basis)
 when every matrix entry is a rational number, but for general matrix entries, the 
-spanning set is not guaranteed to be a basis.
+spanning set is not guarenteed to be a basis.
 </p>
 <p>To use <code class="code">alt_eigen</code>, you will need to first load the package
 <code class="code">alt_eigen.mac</code>. Assuming that the file is in a folder
@@ -106,10 +93,11 @@ that Maxima can find, load the package using the command
 
 (%o2) [[z^2=5*z+2,sspan(matrix([2],[z-1]))]]
 </pre></div>
-<p>This says that for each solution to <em class="math">z^2=5z+2</em>, the column vector <code class="code">matrix([2],[z-1])</code>
-is an eigenvector, and that the corresponding eigenspace is <code class="code">sspan(matrix([2],[z-1])</code>, 
-where <code class="code">sspan</code> means the vector span. To  explicitly solve this eigenvalue 
-condition, set the keyword <code class="code">maxdegree</code> to two; we have
+<p>This says that for each solution to <em class="math">z^2=5z+2</em>, is an eigenvector,
+<code class="code">matrix([1,2],[3,4])</code> is an eigenvector, and that the corresponding
+eigenspace is <code class="code">sspan(matrix([2],[z-1])</code>, where <code class="code">sspan</code> means the
+vector span. To  explicitly solve this eigenvalue condition, set the keyword 
+<code class="code">maxdegree</code> to two; we have
 </p><div class="example">
 <pre class="example-preformatted">(%i3) alt_eigen(matrix([1,2],[3,4]),'var=z,'maxdegree=2);
 
@@ -119,19 +107,19 @@ condition, set the keyword <code class="code">maxdegree</code> to two; we have
 <p>When an eigenspace has dimension two or greater, we can optionally use
 the keyword <code class="code">orthogonal</code> to obtain an orthogonal basis; for example
 </p><div class="example">
-<pre class="example-preformatted">(%i2) m : matrix([92,-3,-18],[198,41,-198],[-126, 21, 200]);
+<pre class="example-preformatted">(%i2)	m : matrix([92,-3,-18],[198,41,-198],[-126, 21, 200]);
 
 (%o2) matrix([92,-3,-18],[198,41,-198],[-126,21,200])
 
-(%i3) alt_eigen(m,'var=z);
+(%i3)	alt_eigen(m,'var=z);
 
-(%o3) [[z=74,sspan(matrix([0],[6],[-1]),matrix([1],[6],[0]))],
-       [z=185,sspan(matrix([1],[11],[-7]))]]
+(%o3)	[[z=74,sspan(matrix([0],[6],[-1]),matrix([1],[6],[0]))],
+         [z=185,sspan(matrix([1],[11],[-7]))]]
 
-(%i4) alt_eigen(m,'var=z,'orthogonal=true);
+(%i4)	alt_eigen(m,'var=z,'orthogonal=true);
 
-(%o4) [[z=74,sspan(matrix([0],[6],[-1]),matrix([37],[6],[36]))],
-        [z=185,sspan(matrix([1],[11],[-7]))]]
+(%o4)	[[z=74,sspan(matrix([0],[6],[-1]),matrix([37],[6],[36]))],
+         [z=185,sspan(matrix([1],[11],[-7]))]]
 </pre></div>
 
 <p>The entries of the matrix can be polynomials. Here is an example with 
@@ -141,7 +129,7 @@ exactly one matrix entry that is a polynomial in the variable <em class="math">q
 <pre class="example-preformatted">(%i2)	m : matrix([92,-3,-18],[198,41,-198],[-126,21,q])$
 </pre></div>
 <p>Maxima determines that <em class="math">(q-200)(q^2-118 q-4079)=0</em> is a special case
-so it surrounds the output using an <code class="code">assuming</code> object:
+and it surrounds the output using an <code class="code">assuming</code> object:
 </p><div class="example">
 <pre class="example-preformatted">(%i3) xxx  : alt_eigen(m,'var=z);
 
@@ -149,7 +137,7 @@ so it surrounds the output using an <code class="code">assuming</code> object:
      [[z^2=q*z+59*z-59*q-1890,sspan(matrix([18],[198],[59-z]))],
      [z=74,sspan(matrix([1],[6],[0]))]])
 </pre></div>
-<p>Substituting <em class="math">q=200</em> into this <code class="code">assuming</code> object yields <code class="code">unknown</code>
+<p>Substituting <em class="math">q=200</em> into this <code class="code">assuming</code> object yeilds <code class="code">unknown</code>
 </p><div class="example">
 <pre class="example-preformatted">(%i4)	subst(q=200,xxx);
 (%o4)	unknown
@@ -164,7 +152,7 @@ the substitution was made before calling <code class="code">alt_eigen</code>; we
          [z=74,sspan(matrix([1],[6],[0]))]]
 </pre></div>
 
-<p>Our final example is a well-known banded matrix:
+<p>Our final example is well-known banded matrix:
 </p><div class="example">
 <pre class="example-preformatted">(%i2)	m : genmatrix(lambda([i,j], if i=j then -2 else if abs(i-j)=1 then 1 else 0),4,4);
 (%o2)	matrix([-2,1,0,0],[1,-2,1,0],[0,1,-2,1],[0,0,1,-2])
@@ -191,21 +179,17 @@ the substitution was made before calling <code class="code">alt_eigen</code>; we
     operator. In a <code class="code">sspan</code> object, vectors that are explicitly zero are 
     removed, vectors are normalized by removing the gcd of its members, 
     redundant members are removed, and the vectors are sorted. Additionally,
-    for each vector <em class="math">x</em>, there is a decision between including <em class="math">-x</em> or
-    <em class="math">x</em> in the spanning set. 
-    
-</li><li>The members of <code class="code">sspan</code> are not guaranteed to be linearly independent, 
-even for purely numeric vectors.
+    for each vector <em class="math">x</em>, there is a  decision between including <em class="math">-x</em> or
+    <em class="math">x</em> in the spanning set. The members of <code class="code">sspan</code> are not 
+    guarenteed to be linearly independent, even for purely numeric vectors.
+
+</li><li>Possibly, the operator <code class="code">sspan</code> could migrate to the linear algebra package.
 
 </li><li>The matrix must not depend on the eigenvalue identifier; if it does, 
 <code class="code">alt_eigen</code> will throw an error.
 
-</li><li>The eigenvalue name cannot be a subscripted <code class="code">m</code>; if it is, <code class="code">alt_eigen</code>
-might give an error about an improper argument to apply.
-
 </li></ul>
 </dd></dl>
-</div>
 
 
 

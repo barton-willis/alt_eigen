@@ -7,6 +7,14 @@ C:\Users\willisb\Documents\GitHub\alt_eigen\alt_eigen\alt_eigen.texi.
 
 * Functions and Variables for alt_eigen::
 
+The function ‘alt_eigen’ expresses the eigenvectors of a matrix as a
+polynomial in its eigenvalues.  When the eigenvalues have no simple
+representation or are lengthy expressions, sometimes ‘alt_eigen’ gives a
+useful result when the standard ‘eigen’ code fails.
+
+   Barton Willis wrote and maintains the ‘alt_eigen’ package and its
+user documentation.
+
 
 File: C:\Users\willisb\Documents\GitHub\alt_eigen\alt_eigen\alt_eigen.info,  Node: Functions and Variables for alt_eigen
 
@@ -15,51 +23,55 @@ File: C:\Users\willisb\Documents\GitHub\alt_eigen\alt_eigen\alt_eigen.info,  Nod
 
  -- Operator: alt_eigen(m, [extra])
 
-     The function ‘alt_eigen’ expresses the eigenvectors of a nonempty,
-     square, unblocked, matrix in terms of its eigenvalues.  When the
-     eigenvalues have no simple representation or are lengthy
-     expressions, sometimes ‘alt_eigen’ yeilds an useful result when the
-     standard ‘eigen’ code fails.
+     The function ‘alt_eigen’ expresses the eigenvectors of a matrix in
+     terms of its eigenvalues.
 
      The first argument to ‘alt_eigen’ is required, and it must be a
      nonempty, square, and unblocked matrix.  The entries of the matrix
      can be polynomials with rational coefficients, including complex
      rational numbers.  Entries containing floating point numbers,
      either IEEE binary64 or bigfloats, are not allowed and will throw
-     an error.  Except for the condition of no floating point numbers,
-     the matrix entries can be arbitray expressions, but for such
-     matrices the results might not be correct due to the inability to
-     always detect vanishing expressions.
+     an error.  Actually, except for the condition of no floating point
+     numbers and blocked matrices, matrix entries can be arbitrary
+     Maxima expressions, but for such matrices, the results might be
+     incorrect due to the inability to detect vanishing expressions.
 
      The remaining arguments to ‘alt_eigen’ are optional keyword
-     arguments.  The keywords are ‘var’, ‘maxdegree’, and ‘orthogonal’.
-     The keywords can be in any order.  Specfically
-        • ‘var’ is the eigenvalue name.  If the eigenvalue name is ‘z’,
-          use ‘'var = z’.  If the keyword ‘var’ is missing, Maxima will
-          use a ‘gensym’ to name the eigenvalue.  The eigenvalue name
-          must be a mapatom.
+     arguments.  The three allowed keywords are ‘var’, ‘maxdegree’, and
+     ‘orthogonal’.  The keywords can be in any order.  Specifically
+        • ‘var’ The keyword ‘var’ names the eigenvalue.  For example, if
+          the eigenvalue name is ‘z’, use the keyword argument ‘'var =
+          z’.  If the keyword ‘var’ is missing, Maxima will use a
+          ‘gensym’ to name the eigenvalue.  The eigenvalue name must be
+          a mapatom.
 
-        • ‘maxdegree’ is the maximum polynomial degree of a factor of
-          the characteristic polynomial that Maxima will attempt to
-          solve.  The default for ‘maxdegree’ is one.
+        • ‘maxdegree’ The keyword ‘maxdegree’ gives the maximum
+          polynomial degree of a factor of the characteristic polynomial
+          that Maxima will attempt to solve.  For example, to find the
+          zeros of all factors with degree two or less, use the keyword
+          argument ‘'maxdegree = 2’.  The value of ‘maxdegree’ must be
+          an explicit integer.  The default for ‘maxdegree’ is one.
 
         • ‘orthogonal’ When ‘orthogonal’ is true, ‘alt_eigen’ will apply
-          the Gram-Schmidt process to a basis for the eigenspace.  The
-          default value for ‘orthogonal’ is false.
+          the Gram-Schmidt process to each spanning set and return an
+          orthogonal basis; for all other values of ‘orthogonal’, the
+          Gram-Schmidt process isn’t applied.  The default value for
+          ‘orthogonal’ is false.  Thus to use the Gram-Schmidt process,
+          use the keyword argument ‘'orthogonal = true’.
 
-     The output of ‘alt_eigen’ is a list of lists.  Each list member has
-     the form ‘[eigenvalue equation, sspan object]’.  Each eigenvalue
-     equation is solved for the highest power of the eigenvalue.  The
-     members of the ‘sspan’ object form a basis for the eigenspace
-     coresponding to the eigenvalue equation.  Each member of the
-     ‘sspan’ object is a polynomial in the eigenvalue.
+     The output of ‘alt_eigen’ is a list of lists, optionally surrounded
+     by an ‘assuming’ object.  The first argument of ‘assuming’ is a
+     predicate that is required for the correctness of the eigenvalues
+     and eigenspaces.
 
-     When a matrix entry is a polynomial, the list of lists output might
-     be surrounded with an ‘assuming’ object.  The first argument of
-     ‘assuming’ is a predicate that involves the polynomial variable(s)
-     that are required for the correctness of the eigenvales and
-     eigenvectors.  The ‘assuming’ object is a simplifying operator that
-     is defined in the ‘alt_eigen’ package.
+     Each member of the list of lists has the form ‘[eigenvalue
+     equation, sspan object]’.  Each eigenvalue equation is solved for
+     the highest power of the eigenvalue.  The members of the ‘sspan’
+     object form spanning set for the eigenspace corresponding to the
+     eigenvalue equation.  This spanning set is linearly independent
+     (that is a basis) when every matrix entry is a rational number, but
+     for general matrix entries, the spanning set is not guaranteed to
+     be a basis.
 
      To use ‘alt_eigen’, you will need to first load the package
      ‘alt_eigen.mac’.  Assuming that the file is in a folder that Maxima
@@ -70,61 +82,58 @@ File: C:\Users\willisb\Documents\GitHub\alt_eigen\alt_eigen\alt_eigen.info,  Nod
           (%i2) alt_eigen(matrix([1,2],[3,4]),'var=z);
 
           (%o2) [[z^2=5*z+2,sspan(matrix([2],[z-1]))]]
-     This says that for each solution to z^2=5z+2, is an eigenvector,
-     ‘matrix([1,2],[3,4])’ is an eigenvector, and that the corresponding
+     This says that for each solution to z^2=5z+2, the column vector
+     ‘matrix([2],[z-1])’ is an eigenvector, and that the corresponding
      eigenspace is ‘sspan(matrix([2],[z-1])’, where ‘sspan’ means the
-     vector span.
-
-     To explicitly solve this eigenvalue condition, set the key word
-     ‘maxdegree’ to two:
+     vector span.  To explicitly solve this eigenvalue condition, set
+     the keyword ‘maxdegree’ to two; we have
           (%i3) alt_eigen(matrix([1,2],[3,4]),'var=z,'maxdegree=2);
 
           (%o3) [[z=(sqrt(33)+5)/2,sspan(matrix([4],[sqrt(33)+3]))], [z=-(sqrt(33)-5)/2,sspan(matrix([4],[3-sqrt(33)]))]]
 
-     When the eigenspace has dimension two or greater, we can optionally
+     When an eigenspace has dimension two or greater, we can optionally
      use the keyword ‘orthogonal’ to obtain an orthogonal basis; for
      example
-          (%i2)	m : matrix([92,-3,-18],[198,41,-198],[-126, 21, 200]);
+          (%i2) m : matrix([92,-3,-18],[198,41,-198],[-126, 21, 200]);
 
           (%o2) matrix([92,-3,-18],[198,41,-198],[-126,21,200])
 
-          (%i3)	alt_eigen(m,'var=z);
+          (%i3) alt_eigen(m,'var=z);
 
-          (%o3)	[[z=74,sspan(matrix([0],[6],[-1]),matrix([1],[6],[0]))],
-                   [z=185,sspan(matrix([1],[11],[-7]))]]
+          (%o3) [[z=74,sspan(matrix([0],[6],[-1]),matrix([1],[6],[0]))],
+                 [z=185,sspan(matrix([1],[11],[-7]))]]
 
-          (%i4)	alt_eigen(m,'var=z,'orthogonal=true);
+          (%i4) alt_eigen(m,'var=z,'orthogonal=true);
 
-          (%o4)	[[z=74,sspan(matrix([0],[6],[-1]),matrix([37],[6],[36]))],
-                   [z=185,sspan(matrix([1],[11],[-7]))]]
+          (%o4) [[z=74,sspan(matrix([0],[6],[-1]),matrix([37],[6],[36]))],
+                  [z=185,sspan(matrix([1],[11],[-7]))]]
 
      The entries of the matrix can be polynomials.  Here is an example
      with exactly one matrix entry that is a polynomial in the variable
      q:
 
           (%i2)	m : matrix([92,-3,-18],[198,41,-198],[-126,21,q])$
-     Maxima determines that (q-200)(q^2-118 q-4079=0 is a specical case
-     and it surrounds the output using an ‘assuming’ object:
+     Maxima determines that (q-200)(q^2-118 q-4079)=0 is a special case
+     so it surrounds the output using an ‘assuming’ object:
           (%i3) xxx  : alt_eigen(m,'var=z);
 
           (%o3) assuming(notequal((q-200)*(q^2-118*q-4079),0),
                [[z^2=q*z+59*z-59*q-1890,sspan(matrix([18],[198],[59-z]))],
                [z=74,sspan(matrix([1],[6],[0]))]])
-     Substituting q=200 into this ‘assuming’ object yeilds ‘unknown’
+     Substituting q=200 into this ‘assuming’ object yields ‘unknown’
           (%i4)	subst(q=200,xxx);
           (%o4)	unknown
      To find the eigenvalues and eigenvectors for this case, we must
      substitute q=200 into the matrix before calling ‘alt_eigen’.
-
      Substituting q=1 into this ‘assuming’ object gives output as if the
      substitution was made before calling ‘alt_eigen’; we have
           (%i5)	subst(q=1,xxx);
           (%o5)	[[z^2=60*z-1949,sspan(matrix([18],[198],[59-z]))],
                    [z=74,sspan(matrix([1],[6],[0]))]]
 
-     Our final example is well-known banded matrix:
+     Our final example is a well-known banded matrix:
           (%i2)	m : genmatrix(lambda([i,j], if i=j then -2 else if abs(i-j)=1 then 1 else 0),4,4);
-          (m)	matrix([-2,1,0,0],[1,-2,1,0],[0,1,-2,1],[0,0,1,-2])
+          (%o2)	matrix([-2,1,0,0],[1,-2,1,0],[0,1,-2,1],[0,0,1,-2])
 
           (%i3)	alt_eigen(m,'var=z,'maxdegree=1);
           (%o3)	[[z^2=-5*z-5,sspan(matrix([1],[z+2],[-z-2],[-1]	))],
@@ -138,30 +147,33 @@ File: C:\Users\willisb\Documents\GitHub\alt_eigen\alt_eigen\alt_eigen.info,  Nod
                    [z=-(sqrt(5)+3)/2,sspan(matrix([2],[1-sqrt(5)],[1-sqrt(5)],[2]))]]
 
      Notes
+
+        • The ‘alt_eigen’ package defines the simplifying operators
+          ‘assuming’ and ‘sspan’.
+
         • Unlike the ‘span’ operator from Maxima’s linear algebra
           package, the ‘sspan’ operator from the ‘alt_eigen’ package is
           a simplifying operator.  In a ‘sspan’ object, vectors that are
           explicitly zero are removed, vectors are normalized by
           removing the gcd of its members, redundant members are
           removed, and the vectors are sorted.  Additionally, for each
-          vector x, there is a decision between including -x or x.
+          vector x, there is a decision between including -x or x in the
+          spanning set.
 
-        • Possibly, the ‘sspan’ could migrate to the linear algebra
-          package.
+        • The members of ‘sspan’ are not guaranteed to be linearly
+          independent, even for purely numeric vectors.
 
         • The matrix must not depend on the eigenvalue identifier; if it
           does, ‘alt_eigen’ will throw an error.
 
-        • When every matrix entry is a rational number, either real or
-          complex, the members of a ‘span’ operator must be linearly
-          independent; if not, it’s a bug.  When a matrix entry is
-          non-polynomial, the members of a ‘span’ operator are not
-          guarenteed to be linearly independent.
+        • The eigenvalue name cannot be a subscripted ‘m’; if it is,
+          ‘alt_eigen’ might give an error about an improper argument to
+          apply.
 
 
 
 Tag Table:
-Node: Functions and Variables for alt_eigen241
+Node: Functions and Variables for alt_eigen610
 
 End Tag Table
 

@@ -7,58 +7,66 @@
 @title The alt_eigen package
 @fonttextsize 11
 
+
+The function @code{alt_eigen} expresses the eigenvectors of a matrix as a
+polynomial in its eigenvalues. When the eigenvalues have no simple representation or 
+are lengthy expressions, sometimes @code{alt_eigen} gives a useful 
+result when the standard @code{eigen} code fails.
+
+Barton Willis wrote and maintains the @code{alt_eigen} package and its user 
+documentation.
+
 @node Functions and Variables for alt_eigen
 @section Functions and Variables for alt_eigen
 
 @fnindex alt_eigen(m, [extra])
 @deffn {Operator} alt_eigen(m, [extra])
 
-The function @code{alt_eigen} expresses the eigenvectors of
-a nonempty, square, unblocked, matrix in terms of its eigenvalues. 
-When the eigenvalues have no simple representation or 
-are lengthy expressions, sometimes @code{alt_eigen} yeilds an useful 
-result when the standard @code{eigen} code fails.
+The function @code{alt_eigen} expresses the eigenvectors of a matrix in terms of 
+its eigenvalues. 
 
 The first argument to @code{alt_eigen} is required, and it must 
 be a nonempty, square, and unblocked matrix. The entries of the matrix can  
 be polynomials with rational coefficients, including complex rational numbers. 
 Entries containing floating point numbers, either IEEE binary64 or bigfloats, 
-are not allowed and will throw an error. Except for the condition of
-no floating point numbers, the matrix entries can be arbitray expressions, but for 
-such matrices the results might not be correct due to the inability to always 
-detect vanishing expressions.
+are not allowed and will throw an error. Actually, except for the condition of
+no floating point numbers and blocked matrices, matrix entries can be arbitrary
+Maxima expressions, but for such matrices, the results might be incorrect due to 
+the inability to detect vanishing expressions.
 
 The remaining arguments to @code{alt_eigen} are optional keyword arguments.
-The keywords are @code{var}, @code{maxdegree}, and @code{orthogonal}. The
-keywords can be in any order.
-Specfically
+The three allowed keywords are @code{var}, @code{maxdegree}, and @code{orthogonal}. 
+The keywords can be in any order.
+Specifically
 @itemize @bullet
-@item @code{var} is the eigenvalue name. If the eigenvalue name is @code{z},
-use @code{'var = z}. If the keyword @code{var} is missing, Maxima will use a 
-@code{gensym} to name the eigenvalue. The eigenvalue name must be a mapatom.
+@item @code{var} The keyword @code{var} names the eigenvalue. For example, if the 
+eigenvalue name is @code{z}, use the keyword argument @code{'var = z}. If the keyword 
+@code{var} is missing, Maxima will use a @code{gensym} to name the eigenvalue. The 
+eigenvalue name must be a mapatom.
 
-@item @code{maxdegree} is the maximum polynomial degree of a factor of the
- characteristic polynomial that Maxima will attempt to solve. The default
-for @code{maxdegree} is one.
+@item @code{maxdegree} The keyword @code{maxdegree} gives the maximum polynomial 
+ degree of a factor of the characteristic polynomial that Maxima will attempt to 
+ solve. For example, to find the zeros of all factors with degree two or less,
+ use the keyword argument @code{'maxdegree = 2}. The value of @code{maxdegree} must 
+ be an explicit integer. The default for @code{maxdegree} is one.
 
 @item @code{orthogonal} When @code{orthogonal} is true, @code{alt_eigen} will 
-apply the Gram-Schmidt process to a basis for the eigenspace. 
-The default value for @code{orthogonal} is false.
-
+apply the Gram-Schmidt process to each spanning set and return an orthogonal basis; 
+for all other values of @code{orthogonal}, the Gram-Schmidt process isn't applied. 
+The default value for @code{orthogonal} is false. Thus to use the Gram-Schmidt 
+process, use the keyword argument @code{'orthogonal = true}.
 @end itemize
 
-The output of @code{alt_eigen} is a list of lists. Each list member has
-the form @code{[eigenvalue equation, sspan object]}. Each eigenvalue
-equation is solved for the highest power of the eigenvalue. The members 
-of the @code{sspan} object form a basis for the eigenspace coresponding
-to the eigenvalue equation. Each member of the @code{sspan} object is
-a polynomial in the eigenvalue.
+The output of @code{alt_eigen} is a list of lists, optionally surrounded by 
+an @code{assuming} object. The first argument of @code{assuming} is a predicate
+that is required for the correctness of the eigenvalues and eigenspaces. 
 
-When a matrix entry is a polynomial, the list of lists output might be surrounded
-with an @code{assuming} object. The first argument of @code{assuming} is a predicate
-that involves the polynomial variable(s) that are required for the correctness of
-the eigenvales and eigenvectors. The @code{assuming} object is a simplifying operator
-that is defined in the @code{alt_eigen} package. 
+Each member of the list of lists has the form @code{[eigenvalue equation, sspan object]}. 
+Each eigenvalue equation is solved for the highest power of the eigenvalue. The members 
+of the @code{sspan} object form @i{spanning set} for the eigenspace corresponding
+to the eigenvalue equation. This spanning set is linearly independent (that is a basis)
+when every matrix entry is a rational number, but for general matrix entries, the 
+spanning set is not guaranteed to be a basis.
 
 To use @code{alt_eigen}, you will need to first load the package
 @code{alt_eigen.mac}. Assuming that the file is in a folder
@@ -73,35 +81,32 @@ After loading @code{alt_eigen}, we can find the eigenvalues and eigenvectors of
 
 (%o2) [[z^2=5*z+2,sspan(matrix([2],[z-1]))]]
 @end example
-This says that for each solution to @math{z^2=5z+2}, is an eigenvector,
-@code{matrix([1,2],[3,4])} is an eigenvector, and that the corresponding
-eigenspace is @code{sspan(matrix([2],[z-1])}, where @code{sspan} means the
-vector span.
-
-To  explicitly solve this eigenvalue condition, set the key word @code{maxdegree} to
-two:
+This says that for each solution to @math{z^2=5z+2}, the column vector @code{matrix([2],[z-1])}
+is an eigenvector, and that the corresponding eigenspace is @code{sspan(matrix([2],[z-1])}, 
+where @code{sspan} means the vector span. To  explicitly solve this eigenvalue 
+condition, set the keyword @code{maxdegree} to two; we have
 @example
 (%i3) alt_eigen(matrix([1,2],[3,4]),'var=z,'maxdegree=2);
 
 (%o3) [[z=(sqrt(33)+5)/2,sspan(matrix([4],[sqrt(33)+3]))], [z=-(sqrt(33)-5)/2,sspan(matrix([4],[3-sqrt(33)]))]]
 @end example
 
-When the eigenspace has dimension two or greater, we can optionally use
+When an eigenspace has dimension two or greater, we can optionally use
 the keyword @code{orthogonal} to obtain an orthogonal basis; for example
 @example
-(%i2)	m : matrix([92,-3,-18],[198,41,-198],[-126, 21, 200]);
+(%i2) m : matrix([92,-3,-18],[198,41,-198],[-126, 21, 200]);
 
 (%o2) matrix([92,-3,-18],[198,41,-198],[-126,21,200])
 
-(%i3)	alt_eigen(m,'var=z);
+(%i3) alt_eigen(m,'var=z);
 
-(%o3)	[[z=74,sspan(matrix([0],[6],[-1]),matrix([1],[6],[0]))],
-         [z=185,sspan(matrix([1],[11],[-7]))]]
+(%o3) [[z=74,sspan(matrix([0],[6],[-1]),matrix([1],[6],[0]))],
+       [z=185,sspan(matrix([1],[11],[-7]))]]
 
-(%i4)	alt_eigen(m,'var=z,'orthogonal=true);
+(%i4) alt_eigen(m,'var=z,'orthogonal=true);
 
-(%o4)	[[z=74,sspan(matrix([0],[6],[-1]),matrix([37],[6],[36]))],
-         [z=185,sspan(matrix([1],[11],[-7]))]]
+(%o4) [[z=74,sspan(matrix([0],[6],[-1]),matrix([37],[6],[36]))],
+        [z=185,sspan(matrix([1],[11],[-7]))]]
 @end example
 
 The entries of the matrix can be polynomials. Here is an example with 
@@ -110,8 +115,8 @@ exactly one matrix entry that is a polynomial in the variable @math{q}:
 @example
 (%i2)	m : matrix([92,-3,-18],[198,41,-198],[-126,21,q])$
 @end example
-Maxima determines that @math{(q-200)(q^2-118 q-4079=0} is a specical case
-and it surrounds the output using an @code{assuming} object:
+Maxima determines that @math{(q-200)(q^2-118 q-4079)=0} is a special case
+so it surrounds the output using an @code{assuming} object:
 @example 
 (%i3) xxx  : alt_eigen(m,'var=z);
 
@@ -119,14 +124,13 @@ and it surrounds the output using an @code{assuming} object:
      [[z^2=q*z+59*z-59*q-1890,sspan(matrix([18],[198],[59-z]))],
      [z=74,sspan(matrix([1],[6],[0]))]])
 @end example
-Substituting @math{q=200} into this @code{assuming} object yeilds @code{unknown}
+Substituting @math{q=200} into this @code{assuming} object yields @code{unknown}
 @example
 (%i4)	subst(q=200,xxx);
 (%o4)	unknown
 @end example
 To find the eigenvalues and eigenvectors for this case, we must substitute 
 @math{q=200} into the matrix before calling @code{alt_eigen}.
-
 Substituting @math{q=1} into this @code{assuming} object gives output as if
 the substitution was made before calling @code{alt_eigen}; we have
 @example
@@ -135,10 +139,10 @@ the substitution was made before calling @code{alt_eigen}; we have
          [z=74,sspan(matrix([1],[6],[0]))]]
 @end example
 
-Our final example is well-known banded matrix:
+Our final example is a well-known banded matrix:
 @example
 (%i2)	m : genmatrix(lambda([i,j], if i=j then -2 else if abs(i-j)=1 then 1 else 0),4,4);
-(m)	matrix([-2,1,0,0],[1,-2,1,0],[0,1,-2,1],[0,0,1,-2])
+(%o2)	matrix([-2,1,0,0],[1,-2,1,0],[0,1,-2,1],[0,0,1,-2])
 
 (%i3)	alt_eigen(m,'var=z,'maxdegree=1);
 (%o3)	[[z^2=-5*z-5,sspan(matrix([1],[z+2],[-z-2],[-1]	))],
@@ -154,23 +158,26 @@ Our final example is well-known banded matrix:
 
 @b{Notes}  
 @itemize @bullet
+
+@item The @code{alt_eigen} package defines the simplifying operators
+@code{assuming} and @code{sspan}.
+
 @item Unlike the @code{span} operator from Maxima's linear algebra package, the
     @code{sspan} operator from the @code{alt_eigen} package is a simplifying 
     operator. In a @code{sspan} object, vectors that are explicitly zero are 
     removed, vectors are normalized by removing the gcd of its members, 
     redundant members are removed, and the vectors are sorted. Additionally,
-    for each vector @math{x}, there is a  decision between including @math{-x} or
-    @math{x}.
-
-@item Possibly, the @code{sspan} could migrate to the linear algebra package.
+    for each vector @math{x}, there is a decision between including @math{-x} or
+    @math{x} in the spanning set. 
+    
+@item The members of @code{sspan} are not guaranteed to be linearly independent, 
+even for purely numeric vectors.
 
 @item The matrix must not depend on the eigenvalue identifier; if it does, 
 @code{alt_eigen} will throw an error.
 
-@item  When every matrix entry is a rational number, either real or complex, the members of
-a @code{span} operator must be linearly independent; if not, it's a bug. When 
-a matrix entry is non-polynomial, the members of a @code{span} operator are not
-guarenteed to be linearly independent.
+@item The eigenvalue name cannot be a subscripted @code{m}; if it is, @code{alt_eigen}
+might give an error about an improper argument to apply.
 
 @end itemize
 @end deffn
