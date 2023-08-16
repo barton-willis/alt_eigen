@@ -2,6 +2,8 @@
 * Functions and Variables for alt_eigen::
 @end menu
 
+@c $ makeinfo --html C:\\Users\\willisb\\Documents\\GitHub\\alt_eigen\\alt_eigen\\alt_eigen.texi
+
 @title The alt_eigen package
 @fonttextsize 11
 
