@@ -190,8 +190,13 @@ assuming(notequal(m1*m2*(m2-m1)*m3*(m3-m1)*(m3-m2)*m4*(m4-m1)*(m4-m2)*(m4-m3),0)
 0$
 
 alt_eigen(m,'var=z,'maxdegree=2);
-[[z=(150*sqrt(70)+1255)/2,sspan(matrix([2-%i],[3*sqrt(70)+25]))],
-[z=-((150*sqrt(70)-1255)/2),sspan(matrix([2-%i],[25-3*sqrt(70)]))]]$
+[[z=(150*sqrt(70)+1255)/2,sspan(matrix(
+		[%i-2],
+		[3*sqrt(70)-25]
+	))],[z=-((150*sqrt(70)-1255)/2),sspan(matrix(
+		[%i-2],
+		[3*sqrt(70)-25]
+	))]]$
 
 (remvalue(m),0);
 0$

@@ -46,7 +46,7 @@ simplifying('sspan,'simp_sspan)$
 /* A Gram-Schmidt based method for finding the column space of a matrix M.
    The second argument p should be an equation of the form XXX = YYY. Following
    every projection operation in the Gram-Schmidt process, substitute (using 
-   fullratsubst) p into the result of the projection. When the third argument
+   lratsubst) p into the result of the projection. When the third argument
    orthogonal is true, return an orthognal basis. */
 alt_eigen_columnspace(M,p,orthogonal) := block([r,c,v],
   [r,c] : matrix_size(M),
@@ -56,7 +56,7 @@ alt_eigen_columnspace(M,p,orthogonal) := block([r,c,v],
 /* Return the nullspace of the matrix m. The second argument, p, should be an
    equation of the form XXX = YYY. Following a triangularization of m^T | I
    (augment the matrix m^T with the appropriately sized identity matrix),
-   do a fullratsubst of p of the triangularized matrix. Let's call
+   do a lratsubst of p of the triangularized matrix. Let's call
    the result of that A | B. 
    
    The return value is a list of lists. For each row of A that is syntactically zero
@@ -78,7 +78,7 @@ alt_eigen_columnspace(M,p,orthogonal) := block([r,c,v],
 alt_eigen_nullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_transpose : false],
    [nc,nr] : matrix_size(m), /* [nr,nc] = size of m^T */
    m : triangularize(addcol(transpose(m), ident(nr))),
-   m : fullratsubst(p, m),
+   m : lratsubst(p, m),
    for r in m do (
       r1 : map(lambda([i],equal(inpart(r,i),0)), 1 .. nc),
       ok : block([prederror : false], xreduce("and",r1)),
@@ -89,7 +89,7 @@ alt_eigen_nullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_
    
 /* Apply the Gram-Schmidt process to the list of column vectors of equal size 
    (matrices) in v. The second argument p should be an equation of the form 
-   XXX = YYY. Following each projection, substitute (using fullratsubst) p into 
+   XXX = YYY. Following each projection, substitute (using lratsubst) p into 
    the result of the projection. 
 
    The inner product is a.b = transpose(conjugate(a)).b. To do this, we'll locally set 
@@ -102,8 +102,9 @@ alt_eigen_nullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_
 alt_eigen_gramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, uk, 
   doallmxops : true, scalarmatrixp : true, matrix_element_transpose : 'conjugate],   
    dot : lambda([a,b], transpose(a).b),
-   proj : lambda([a,b], fullratsubst(p, dot(a,b)*a/dot(a,a))),    
-   for vk in v do (         
+   proj : lambda([a,b], fullratsubst(p, dot(a,b)*a/dot(a,a))), 
+   for vk in v do (   
+      vk : fullratsubst(p,vk),      
       uk : ratsimp(vk - lsum(proj(s,vk), s, u)),
       uk : fullratsubst(p,uk),
       if some(lambda([s], is(s # 0)), uk) then (
@@ -287,7 +288,7 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, lk, ord, hp, es : [],
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
     lk : alt_eigen_h(m,r,pk,z),
-    lk : fullratsubst(first(maybe_solve(pk,z,1)), lk), 
+    lk : lratsubst(first(maybe_solve(pk,z,1)), lk), 
     pk : maybe_solve(pk, z, hp),
     lk : alt_eigen_columnspace(lk, pk, false),
     for pkl in pk do (
