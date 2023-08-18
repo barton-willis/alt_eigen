@@ -263,6 +263,7 @@ assuming(notequal((q-3)*(q-2),0),
 	),0);
 0$
 
+/* This passes using Maxima 5.43, but fails with 5.46 & 5.47. I don't know why.*/
 alt_eigen(m,'var=z);
 
 [[z^3=5*z^2+1340*z+168,sspan(matrix(
