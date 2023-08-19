@@ -43,15 +43,19 @@ simplifying('assuming,'simp_assuming)$
   simpfunmake('sspan, listify(setify(vv))));
 simplifying('sspan,'simp_sspan)$
 
-/* A Gram-Schmidt based method for finding the column space of a matrix M.
-   The second argument p should be an equation of the form XXX = YYY. Following
-   every projection operation in the Gram-Schmidt process, substitute (using 
-   lratsubst) p into the result of the projection. When the third argument
-   orthogonal is true, return an orthognal basis. */
-alt_eigen_columnspace(M,p,orthogonal) := block([r,c,v],
-  [r,c] : matrix_size(M),
-  v : map(lambda([k],col(M,k)), 1 .. c),
-  alt_eigen_gramschmidt(v,p,orthogonal));
+/* This is mostly column space code from the linear algebra package minus checking
+   for correct inputs and the provios feature. Here p should be an equation of the
+   form X = Y. After trigangularation, we fullratsubst p into the result. */
+alt_eigen_columnspace(a,p) := block([m,nc, nr, cs : set(), pos, algebraic : true, c_min],
+  [nr, nc] : matrix_size(a),
+  m : fullratsubst(p,triangularize(a)),
+  m : block([rootsconmode : 'all], matrixmap('rootscontract,m)),
+  c_min : 1,
+  for i : 1 thru nr while c_min <= nc do (
+   if listp(pos : locate_matrix_entry(m, i, c_min, i, nc, lambda([x], x # 0), 'bool)) then (
+     c_min : second(pos) + 1,
+     cs : adjoin(col(a,second(pos)) ,cs))),
+   funmake('sspan, listify(cs)));
 
 /* Return the nullspace of the matrix m. The second argument, p, should be an
    equation of the form XXX = YYY. Following a triangularization of m^T | I
@@ -139,9 +143,6 @@ ratmx : true misbehaves with a non default value or matrix_element_mult. And
 ratmx : true doesn't seem to work with nullspace. Let's locally set ratmx to 
 false for the call to nullspace.
 
-Some problems run very slowly with ratfac : true (example 
-matrix([0,0,0,1,0,1,1,1,0,1],[1,1,0,0,1,0,1,0,1,0],[1,1,1,1,0,0,0,1,0,1],[0,1,1,0,0,1,1,1,1,0],[0,0,1,0,1,0,1,0,1,0],[0,1,0,0,0,0,0,1,0,0],[1,1,0,0,0,0,0,0,1,1],[1,0,1,1,1,0,1,0,0,0],[0,1,1,0,0,1,0,1,0,1],[1,0,0,1,1,0,0,1,0,0])
-
 bug: (can cause trouble for matrices with floating point entries)
 
  (%i4) rat(1.2) * rat(1/2) - 11/5, keepfloat : true;
@@ -152,7 +153,7 @@ For algebraic numbers, sometimes subres is better than spmod.*/
 
 alt_eigen_h(m,r,p,z) := block([vn, n, l, lk, ls, e : funmake('matrix,[]), 
     psub, q, listarith:true, scalarmatrixp:false, doallmxops : true, 
-    prederror : false, ratfac : false],
+    prederror : false],
   vn : rat(ident(r)),
   p : rat(p), 
   n : hipow(p,z),  
@@ -290,9 +291,9 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, lk, ord, hp, es : [],
     lk : alt_eigen_h(m,r,pk,z),
     lk : lratsubst(first(maybe_solve(pk,z,1)), lk), 
     pk : maybe_solve(pk, z, hp),
-    lk : alt_eigen_columnspace(lk, pk, false),
+    lk : alt_eigen_columnspace(lk, pk),
     for pkl in pk do (
        ls : subst(pkl, lk),
-       if ortho then ls :alt_eigen_gramschmidt(ls, pkl,true),
+       if ortho then ls : alt_eigen_gramschmidt(ls, pkl,true),
        es : cons([pkl, ls], es))),
   assuming(cnd, subst(z=u,es)));
