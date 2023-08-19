@@ -9,7 +9,7 @@
         MM : matrix(),
         for ck in es do (
             MM : addcol(MM, ck)),
-        MM : fullratsubst(pk, (M - λ*identfor(M) ) . MM),
+        MM : lratsubst(pk, (M - λ*identfor(M) ) . MM),
         OK : OK and every(lambda([q],q=0),MM)),
     OK),0);
 0$
