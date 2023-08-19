@@ -49,7 +49,11 @@ simplifying('sspan,'simp_sspan)$
 alt_eigen_columnspace(a,p) := block([m,nc, nr, cs : set(), pos, algebraic : true, c_min],
   [nr, nc] : matrix_size(a),
   m : fullratsubst(p,triangularize(a)),
-  m : block([rootsconmode : 'all], matrixmap('rootscontract,m)),
+  m : block([rootsconmode : 'all], matrixmap('rootscontract,m)),*/
+  m : fullratsubst(p,m),
+  m : matrixmap('rootscontract,m),
+  m : matrixmap('radcan, m),
+  print("m = ",m),
   c_min : 1,
   for i : 1 thru nr while c_min <= nc do (
    if listp(pos : locate_matrix_entry(m, i, c_min, i, nc, lambda([x], x # 0), 'bool)) then (
@@ -278,14 +282,14 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, lk, ord, hp, es : [],
   p : sublist(p, lambda([s], not freeof(z,s))), 
   p : map(gfactor,p),
   cnd : alt_eigen_cnd(p,z),
-  /*
+/*
   cnd : outermap(lambda([a,b], resultant(a,b,z)), p, p),
   cnd : xreduce('append, cnd),
   cnd : delete(0,cnd),
   cnd : listify(setify(cnd)),
   cnd : factor(xreduce("*",cnd)),
   cnd : simp_notequal(cnd,z), */
-
+  
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
     lk : alt_eigen_h(m,r,pk,z),
