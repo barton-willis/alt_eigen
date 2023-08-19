@@ -102,11 +102,11 @@ alt_eigen_nullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_
 alt_eigen_gramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, uk, 
   doallmxops : true, scalarmatrixp : true, matrix_element_transpose : 'conjugate],   
    dot : lambda([a,b], transpose(a).b),
-   proj : lambda([a,b], fullratsubst(p, dot(a,b)*a/dot(a,a))), 
+   proj : lambda([a,b], lratsubst(p, dot(a,b)*a/dot(a,a))), 
    for vk in v do (   
-      vk : fullratsubst(p,vk),      
+      vk : lratsubst(p,vk),      
       uk : ratsimp(vk - lsum(proj(s,vk), s, u)),
-      uk : fullratsubst(p,uk),
+      uk : lratsubst(p,uk),
       if some(lambda([s], is(s # 0)), uk) then (
          push(uk, u),
          push(vk, basis))),
