@@ -43,9 +43,10 @@ simplifying('assuming,'simp_assuming)$
   simpfunmake('sspan, listify(setify(vv))));
 simplifying('sspan,'simp_sspan)$
 
-myfullratsubst(p,e,max) := block([ee],
-  ee : lratsubst(p,e),
-  while e # ee and max > 0 do (
+/* I had some trouble with fullratsubst not finishing. Here is an alternative
+   that limits the number of iterations. */
+alt_eigen_fullratsubst(p,e,max) := block([ee : lratsubst(p,e)],
+  while e # ee and max >= 0 do (
    max : max-1,
    e : ee,
    ee : lratsubst(p,e)),
@@ -57,7 +58,7 @@ myfullratsubst(p,e,max) := block([ee],
 alt_eigen_columnspace(a,p,x) := block([mm,ratmx : true, m,nc, nr, cs : set(), pos, algebraic : true, c_min],
   [nr, nc] : matrix_size(a),
   m : triangularize(a),
-  m : myfullratsubst(p,m,1+hipow(expand(m),x)),
+  m : alt_eigen_fullratsubst(p,m,hipow(expand(m),x)),
   c_min : 1,
   for i : 1 thru nr while c_min <= nc do (
    if listp(pos : locate_matrix_entry(m, i, c_min, i, nc, lambda([x], x # 0), 'bool)) then (
