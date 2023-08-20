@@ -43,17 +43,21 @@ simplifying('assuming,'simp_assuming)$
   simpfunmake('sspan, listify(setify(vv))));
 simplifying('sspan,'simp_sspan)$
 
+myfullratsubst(p,e,max) := block([ee],
+  ee : lratsubst(p,e),
+  while e # ee and max > 0 do (
+   max : max-1,
+   e : ee,
+   ee : lratsubst(p,e)),
+  ee);
+  
 /* This is mostly column space code from the linear algebra package minus checking
    for correct inputs and the provios feature. Here p should be an equation of the
    form X = Y. After trigangularation, we fullratsubst p into the result. */
-alt_eigen_columnspace(a,p) := block([m,nc, nr, cs : set(), pos, algebraic : true, c_min],
+alt_eigen_columnspace(a,p,x) := block([mm,ratmx : true, m,nc, nr, cs : set(), pos, algebraic : true, c_min],
   [nr, nc] : matrix_size(a),
-  m : fullratsubst(p,triangularize(a)),
-  m : block([rootsconmode : 'all], matrixmap('rootscontract,m)),*/
-  m : fullratsubst(p,m),
-  m : matrixmap('rootscontract,m),
-  m : matrixmap('radcan, m),
-  print("m = ",m),
+  m : triangularize(a),
+  m : myfullratsubst(p,m,1+hipow(expand(m),x)),
   c_min : 1,
   for i : 1 thru nr while c_min <= nc do (
    if listp(pos : locate_matrix_entry(m, i, c_min, i, nc, lambda([x], x # 0), 'bool)) then (
@@ -276,26 +280,19 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, lk, ord, hp, es : [],
   ortho : assoc('orthogonal, extra, false),
   if not freeof(u,m) then error("The first argument must not depend on ", u),
 
-  p : block([ratmx : true], charpoly(matrixmap('rat, m), z)),  
+  p : block([ratmx : true], charpoly(matrixmap('rat, m), u)),  
   p : gfactor(p),
   p : if not mapatom(p) and op(p) = "*" then args(p) else [p],
-  p : sublist(p, lambda([s], not freeof(z,s))), 
+  p : sublist(p, lambda([s], not freeof(u,s))), 
   p : map(gfactor,p),
-  cnd : alt_eigen_cnd(p,z),
-/*
-  cnd : outermap(lambda([a,b], resultant(a,b,z)), p, p),
-  cnd : xreduce('append, cnd),
-  cnd : delete(0,cnd),
-  cnd : listify(setify(cnd)),
-  cnd : factor(xreduce("*",cnd)),
-  cnd : simp_notequal(cnd,z), */
+  cnd : alt_eigen_cnd(p,u),
   
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
-    lk : alt_eigen_h(m,r,pk,z),
-    lk : lratsubst(first(maybe_solve(pk,z,1)), lk), 
-    pk : maybe_solve(pk, z, hp),
-    lk : alt_eigen_columnspace(lk, pk),
+    lk : alt_eigen_h(m,r,pk,u),
+    lk : lratsubst(first(maybe_solve(pk,u,1)), lk), 
+    pk : maybe_solve(pk, u, hp),
+    lk : alt_eigen_columnspace(lk, pk, u),
     for pkl in pk do (
        ls : subst(pkl, lk),
        if ortho then ls : alt_eigen_gramschmidt(ls, pkl,true),
