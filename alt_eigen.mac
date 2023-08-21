@@ -92,7 +92,7 @@ alt_eigen_columnspace(a,p,x) := block([mm,ratmx : true, m,nc, nr, cs : set(), po
 alt_eigen_nullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_transpose : false],
    [nc,nr] : matrix_size(m), /* [nr,nc] = size of m^T */
    m : triangularize(addcol(transpose(m), ident(nr))),
-   m : lratsubst(p, m),
+   m : fullratsubst(p, m),
    for r in m do (
       r1 : map(lambda([i],equal(inpart(r,i),0)), 1 .. nc),
       ok : block([prederror : false], xreduce("and",r1)),
@@ -118,9 +118,9 @@ alt_eigen_gramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, u
    dot : lambda([a,b], transpose(a).b),
    proj : lambda([a,b], lratsubst(p, dot(a,b)*a/dot(a,a))), 
    for vk in v do (   
-      vk : lratsubst(p,vk),      
+      vk : fullratsubst(p,vk),      
       uk : ratsimp(vk - lsum(proj(s,vk), s, u)),
-      uk : lratsubst(p,uk),
+      uk : fullratsubst(p,uk),
       if some(lambda([s], is(s # 0)), uk) then (
          push(uk, u),
          push(vk, basis))),
@@ -292,7 +292,7 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, lk, ord, hp, es : [],
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
     lk : alt_eigen_h(m,r,pk,u),
-    lk : lratsubst(first(maybe_solve(pk,u,1)), lk), 
+    lk : fullratsubst(first(maybe_solve(pk,u,1)), lk), 
     pk : maybe_solve(pk, u, hp),
     lk : alt_eigen_columnspace(lk, pk, u),
     for pkl in pk do (
