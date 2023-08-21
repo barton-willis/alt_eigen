@@ -25,7 +25,7 @@ simp_assuming(pred,f) := block([prederror : false, bool : is(pred)],
 
 simplifying('assuming,'simp_assuming)$
 
-/* A simplifying span function. So that it doesn't interfer with the linear algebra
+/* A simplifying span function. So that it doesn't interfere with the linear algebra
    package, for now, we'll name it sspan (for simplifying span), not span.
 
    Removes vectors that are explicitly zero, normalizes vectors by removing 
@@ -53,8 +53,9 @@ alt_eigen_fullratsubst(p,e,max) := block([ee : lratsubst(p,e)],
   ee);
   
 /* This is mostly column space code from the linear algebra package minus checking
-   for correct inputs and the provios feature. Here p should be an equation of the
-   form X = Y. After trigangularation, we fullratsubst p into the result. */
+   for correct inputs and the proviso feature. Here np should be an equation of the
+   form X = Y. After triangularization, we do a_alt_eigen_fullratsubst p into 
+   the result.*/
 alt_eigen_columnspace(a,p,x) := block([mm,ratmx : true, m,nc, nr, cs : set(), pos, algebraic : true, c_min],
   [nr, nc] : matrix_size(a),
   m : triangularize(a),
@@ -215,8 +216,8 @@ simp_notequal(e,z) := block([inflag : true, fn],
      e : fn(e)),
    notequal(e,0));
 
-/* The first argument is a list of the factors of a polynoimal and the
-   second arument is the polynomial variable. Require that 
+/* The first argument is a list of the factors of a polynomial and the
+   second argument is the polynomial variable. Require that 
 
      a) each factor be square free
      b) the set of factors have pairwise non vanishing resultants
@@ -244,7 +245,7 @@ alt_eigen_cnd(p,z) := block([cnd,n],
 
 maxdegree -- try to solve factors of the characteristic poly with degree n or less,
 orthogonal -- when true, eigenvectors with geometric multiplicity two or more are 
-sent through gram schmidt.
+sent through Gram Schmidt.
 
 Computing the characteristic polynomial is much faster with ratmx : true. 
 
