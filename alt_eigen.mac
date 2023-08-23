@@ -43,15 +43,6 @@ simplifying('assuming,'simp_assuming)$
   simpfunmake('sspan, listify(setify(vv))));
 simplifying('sspan,'simp_sspan)$
 
-/* I had some trouble with fullratsubst not finishing. Here is an alternative
-   that limits the number of iterations. */
-alt_eigen_fullratsubst(p,e,max) := block([ee : lratsubst(p,e)],
-  while e # ee and max >= 0 do (
-   max : max-1,
-   e : ee,
-   ee : lratsubst(p,e)),
-  ee);
-  
 /* This is mostly column space code from the linear algebra package minus checking
    for correct inputs and the proviso feature. Here np should be an equation of the
    form X = Y. After triangularization, we do a_alt_eigen_fullratsubst p into 
@@ -59,7 +50,8 @@ alt_eigen_fullratsubst(p,e,max) := block([ee : lratsubst(p,e)],
 alt_eigen_columnspace(a,p,x) := block([mm,ratmx : true, m,nc, nr, cs : set(), pos, algebraic : true, c_min],
   [nr, nc] : matrix_size(a),
   m : triangularize(a),
-  m : alt_eigen_fullratsubst(p,m,hipow(expand(m),x)),
+  p : first(p),
+  m : fullratsubst(rhs(p),lhs(p),m),
   c_min : 1,
   for i : 1 thru nr while c_min <= nc do (
    if listp(pos : locate_matrix_entry(m, i, c_min, i, nc, lambda([x], x # 0), 'bool)) then (
@@ -92,7 +84,7 @@ alt_eigen_columnspace(a,p,x) := block([mm,ratmx : true, m,nc, nr, cs : set(), po
 alt_eigen_nullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_transpose : false],
    [nc,nr] : matrix_size(m), /* [nr,nc] = size of m^T */
    m : triangularize(addcol(transpose(m), ident(nr))),
-   m : fullratsubst(p, m),
+   m : fullratsubst(rhs(p),lhs(p), m),
    for r in m do (
       r1 : map(lambda([i],equal(inpart(r,i),0)), 1 .. nc),
       ok : block([prederror : false], xreduce("and",r1)),
@@ -118,9 +110,9 @@ alt_eigen_gramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, u
    dot : lambda([a,b], transpose(a).b),
    proj : lambda([a,b], lratsubst(p, dot(a,b)*a/dot(a,a))), 
    for vk in v do (   
-      vk : fullratsubst(p,vk),      
+      vk : fullratsubst(rhs(p),lhs(p),vk),      
       uk : ratsimp(vk - lsum(proj(s,vk), s, u)),
-      uk : fullratsubst(p,uk),
+      uk : fullratsubst(rhs(p),lhs(p),uk),
       if some(lambda([s], is(s # 0)), uk) then (
          push(uk, u),
          push(vk, basis))),
@@ -257,7 +249,7 @@ gcd (spmod) and algebraic (false), we have
 So let's set gcd : subres and algebraic : true. */
 
 alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, lk, ord, hp, es : [], 
-  u, ortho, ls, inflag : true, doallmxops : true, gcd : subres, algebraic : true],  
+  sol, u, ortho, ls, inflag : true, doallmxops : true, gcd : subres, algebraic : true],  
   if not matrixp(m) then error("The first argument must be a matrix"),  
   if blockmatrixp(m) then error("The first argument must be an unblocked matrix"),
   if not float_free_p(m) then error("The function alt_eigen does not work for matrices with floating point entries"),
@@ -292,7 +284,8 @@ alt_eigen(m, [extra]) := block([r, c, n, z : gensym(), p, lk, ord, hp, es : [],
   for pk in p do ( 
     [pk,ord] : if not mapatom(pk) and op(pk) ="^" then args(pk) else [pk,1],
     lk : alt_eigen_h(m,r,pk,u),
-    lk : fullratsubst(first(maybe_solve(pk,u,1)), lk), 
+    sol : first(maybe_solve(pk,u,1)),
+    lk : fullratsubst(rhs(sol),lhs(sol), lk), 
     pk : maybe_solve(pk, u, hp),
     lk : alt_eigen_columnspace(lk, pk, u),
     for pkl in pk do (
