@@ -43,9 +43,9 @@ simplifying('assuming,'simp_assuming)$
   simpfunmake('sspan, listify(setify(vv))));
 simplifying('sspan,'simp_sspan)$
 
-/* This is mostly column space code from the linear algebra package minus checking
-   for correct inputs and the proviso feature. Here np should be an equation of the
-   form X = Y. After triangularization, we do a_alt_eigen_fullratsubst p into 
+/* This is mostly the column space code from the linear algebra package minus checking
+   for correct inputs and the proviso feature. Here p should be an equation of the
+   form X = Y. After triangularization, we do a fullratsubst of p into 
    the result.*/
 alt_eigen_columnspace(a,p,x) := block([mm,ratmx : true, m,nc, nr, cs : set(), pos, algebraic : true, c_min],
   [nr, nc] : matrix_size(a),
@@ -108,7 +108,7 @@ alt_eigen_nullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_
 alt_eigen_gramschmidt(v,p,orthogonal) := block([u : [], basis : [], proj, dot, uk, 
   doallmxops : true, scalarmatrixp : true, matrix_element_transpose : 'conjugate],   
    dot : lambda([a,b], transpose(a).b),
-   proj : lambda([a,b], lratsubst(p, dot(a,b)*a/dot(a,a))), 
+   proj : lambda([a,b], fullratsubst(rhs(p), lhs(p), dot(a,b)*a/dot(a,a))), 
    for vk in v do (   
       vk : fullratsubst(rhs(p),lhs(p),vk),      
       uk : ratsimp(vk - lsum(proj(s,vk), s, u)),
