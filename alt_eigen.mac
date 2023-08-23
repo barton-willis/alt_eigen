@@ -95,7 +95,7 @@ alt_eigen_nullspace(m,p) := block([nc, nr, acc : [], r1, r2, ok, matrix_element_
    
 /* Apply the Gram-Schmidt process to the list of column vectors of equal size 
    (matrices) in v. The second argument p should be an equation of the form 
-   XXX = YYY. Following each projection, substitute (using lratsubst) p into 
+   XXX = YYY. Following each projection, substitute (using fullratsubst) p into 
    the result of the projection. 
 
    The inner product is a.b = transpose(conjugate(a)).b. To do this, we'll locally set 
