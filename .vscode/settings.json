@@ -7,10 +7,14 @@
         "latex",
         "lisp",
         "plaintext",
-        "mac"
+        "mac",
+        "texinfo"
     ],
     "spellright.parserByClass": {
         "mac": {
+            "parser": "plain"
+        },
+        "texinfo": {
             "parser": "plain"
         }
     }
