@@ -324,6 +324,47 @@ true$
 (remvalue(m),0);
 0$
 
+alt_eigen(matrix([1,4],[3,2]),'var=λ);
+[[λ=-2,sspan(matrix(
+		[4],
+		[-3]
+	))],[λ=5,sspan(matrix(
+		[1],
+		[1]
+	))]]$
+
+alt_eigen(matrix([1,0,0],[0,1,2],[0,0,0]),'var=λ);
+[[λ=0,sspan(matrix(
+		[0],
+		[2],
+		[-1]
+	))],[λ=1,sspan(matrix(
+		[0],
+		[1],
+		[0]
+	),matrix(
+		[1],
+		[0],
+		[0]
+	))]]$
+
+alt_eigen(matrix([1,0,0],[0,1,0],[0,0,1]),'var=λ);
+[[λ=1,sspan(matrix(
+		[0],
+		[0],
+		[1]
+	),matrix(
+		[0],
+		[1],
+		[0]
+	),matrix(
+		[1],
+		[0],
+		[0]
+	))]]$
+	
+
+
 /* Did the code leak any facts or contexts?*/
 facts();
 []$
