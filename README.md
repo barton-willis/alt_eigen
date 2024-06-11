@@ -1,14 +1,14 @@
 # alt eigen
 
- This is a Maxima language package for expressing eigenvectors in terms of eigenvalues.
+The Maxima language `alt_eigen` package expresses eigenvectors in terms of eigenvalues.
 
 To use this package, you will need to load it manually. Assuming the file 
-`alt_eigen.mac` is in a path that Maxima can find, load it using the command.
+`alt_eigen.mac` is in a path that Maxima can find, load the package using the command
 ~~~
 	load("alt_eigen.mac")$
 ~~~
 To find the eigenspaces of `matrix([1 , 2],[3 ,-4])`, use
-the command
+the command `alt_eigen`; for example,
 ~~~
 (%i3)	M : matrix([1,2],[3,-4]);
 (%o3)	matrix([1,2],[3,-4])
@@ -18,11 +18,16 @@ the command
          [z=2,sspan(matrix([-2],[-1]))]]
 ~~~
 The last two arguments to `alt_eigen` are optional, and they can be in any order.
+The argument `'var=z` tells Maxima to use the name `z` for the eigenvalue, and the argument `maxdegree=1` instructs the code to solve every factor of the characteristic polynomial that has degree at most one, where the characteristic polynomial is factored over the gaussian integers.
 
-The argument `'var=z` uses the name `z` for the eigenvalue, and the argument `maxdegree=1` instructs the code to solve every factor of the characteristic polynomial that has degree at most one. The characteristic polynomial is factored over
-the gaussian integers.
+The output is a list of lists, with each list member of the form `[eigenvalue, eigenspace]`, where `eigenvalue` is a polynomial in the variable `var` that has been solved for its highest power.
 
-The output is a list of lists, with each list member of the form `[eigenvalue, eigenspace].` The eigenspace is represented as the span of a list of column vectors.
+Each eigenspace is represented as the span of a list of column vectors.
+To represent the span, this package defines a simplifying object `sspan`. 
+For the same purpose, the linear algebra package represents a span using a _nonsimplifying_ `span` object.
+
+When needed, the output is enclosed an `assuming` object that includes assumptions about parameters that are required for the validity of the answer. Especially when
+used non interactively, a user will need to check if the output is an `assuming` object. 
 
 __Examples__
 
@@ -53,7 +58,7 @@ A $3 \times 3$ case
     sspan(matrix([2],[z-1]))]])
  ~~~
  Maxima determined that $-(64(q-2) q) = 0 $ is a special case. Substituting $q=2$ 
- into the above yields `unknown`
+ into the above yields `unknown`:
  ~~~
 (%i3)	subst(q=2,xxx);
 (%o3)	unknown
@@ -68,7 +73,7 @@ For an eigenspace with dimension two or greater, we can optionally apply the
 Gram-Schmidt process to find an orthogonal basis for the eigenspace. Here is
 an example
 ~~~
-(%i2)	M : matrix([15714,  24872,  12436], [-1450, -2151,  -1160],[-7025,  -11240, -5451])$
+(%i2)	M : matrix([15714, 24872, 12436], [-1450, -2151, -1160],[-7025, -11240, -5451])$
 
 (%i3)	alt_eigen(M,'var=z);
 (%o3)	[z=169,[matrix([-8],[5],[0]),matrix([0],[1],[-2])],
