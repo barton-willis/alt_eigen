@@ -117,3 +117,15 @@ $q = 0$ will be a special case, we start with issuing the Maxima command
    [z=q+1,sspan(matrix([1],[-1],[0],[1],[-1]))],
    [z=1,sspan(matrix([-1],[0],[1],[0],[-1]))]]
 ~~~
+
+## Testing
+
+Assuming the file `alt_eigen.mac` is in a path that Maxima can find, to run the tests for this package, issue the command
+~~~
+ batch(rtest_alt_eigen,'test);
+~~~
+Maxima version 5.47.0 should complete all the tests with no failures. If you find that some tests fail, please report them to the `alt_eigen` discussion list.
+
+## Name of this package
+
+The package name `alt_eigen` isn't particularly descriptive. As you likely suspect, the `alt` in the package name is a shortening of the word `alternative,` meaning an alternative to the standard Maxima package for eigenvalues and eigenvectors. 
