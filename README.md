@@ -61,7 +61,7 @@ used non interactively, a user will need to check if the output is an `assuming`
     sspan(matrix([2],[z-1]))]])
  ~~~
 
- Maxima determined that $-64(q-2) q = 0 $ is a special case. Substituting $q=2$
+ Maxima determined that $-64(q-2) q = 0$ is a special case. Substituting $q=2$
  into the above yields `unknown`:
 
  ~~~
